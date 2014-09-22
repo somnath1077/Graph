@@ -10,7 +10,7 @@ package simplegraph;
 public interface Edge {
 
     /**
-     * Takes a vertex and returns the other endpoint/ 
+     * Takes a vertex of the Edge object and returns it's other endpoint.
      * @param v
      * @return the other endpoint of the edge
      */
