@@ -19,7 +19,6 @@ public class SimpleGraph implements Graph {
      * A SimpleGraph object has two fields: --the number of edges --the
      * adjacency list implemented as a HashTable of heaps
      */
-    private int numEdges;
     private final Map<Integer, Collection<Integer>> adjacencyList;
 
     public SimpleGraph() {
@@ -96,11 +95,11 @@ public class SimpleGraph implements Graph {
     }
 
     @Override
-    public Edge addEdge(int v1, int v2) {
+    public UndirectedEdge addEdge(int v1, int v2) {
         if (isVertex(v1) && isVertex(v2)) {
             adjacencyList.get(v1).add(v2);
             adjacencyList.get(v2).add(v1);
-            Edge e = new Edge(v1, v2);
+            UndirectedEdge e = new UndirectedEdge(v1, v2);
             return e;
         }
         throw new IllegalArgumentException("Cannot add edge.");
@@ -135,16 +134,19 @@ public class SimpleGraph implements Graph {
 
     @Override
     public void deleteEdge(int v1, int v2) {
-        Edge e = new Edge(v1, v2);
+        UndirectedEdge e = new UndirectedEdge(v1, v2);
         deleteEdge(e);
     }
 
     @Override
     public boolean isConnected(boolean strongly) {
         Set<Integer> visited = new HashSet<>();
-
         Queue<Integer> queue = new LinkedList<>();
-
+        
+        /*
+            Add some arbitrary element to the visited and queue
+            data structures. 
+        */
         Iterator<Integer> iter = adjacencyList.keySet().iterator();
         if (iter.hasNext()) {
             Integer vertex = iter.next();
@@ -196,21 +198,35 @@ public class SimpleGraph implements Graph {
         return v;
     }
 
+    @Override
+    public int size() {
+        return adjacencyList.size();
+    }
+
+    @Override
+    public int getNumberOfEdges() {
+        int numE = 0;
+        for (Integer i : adjacencyList.keySet()) {
+            numE += adjacencyList.get(i).size();
+        }
+        return numE;
+    }
+
     public static void main(String[] args) {
-        SimpleGraph g = new SimpleGraph();
-        g.addVertex(2);
-        g.addVertex(3);
+        Graph g = GraphReader.readGraph("smallgraph.csv");
 
-        int a = g.addNewVertex();
-        int b = g.addNewVertex();
+        System.out.println(g.size());
 
-        g.addEdge(a, b);
-        g.addEdge(b, 3);
-        g.addEdge(a, 2);
-
-        System.out.println(g);
+        System.out.println(g.getNumberOfEdges());
 
         System.out.println(g.isConnected(true));
+        
+        SimpleGraph g1 = new SimpleGraph();
+        g1.addVertex(1);
+        g1.addVertex(2);
+        g1.addVertex(3);
+        System.out.println(g1.isConnected(true));
+ 
     }
 
 }
