@@ -38,8 +38,11 @@ public class View extends JPanel {
 
     @Override
     public void paint(Graphics g) {
+        
+        System.out.println("paint!");
+        
         g.setColor(Color.white);
-        g.fillRect(0, 0, 1000,1000);
+        g.fillRect(0, 0, 1000, 1000);
         g.setColor(Color.black);
         Collection<Edge> edges = graph.getEdges();
         for (Edge e : edges) {
