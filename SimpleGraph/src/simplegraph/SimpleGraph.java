@@ -26,6 +26,18 @@ public class SimpleGraph implements Graph {
     }
 
     @Override
+    public Collection<Edge> getEdges() {
+        Collection<Edge> edges = new HashSet<Edge>();
+        for (Integer u : adjacencyList.keySet()) {
+            for (Integer v : adjacencyList.get(u)) {
+                Edge e = new UndirectedEdge(u, v);
+                edges.add(e);
+            }
+        }
+        return edges;
+    }
+
+    @Override
     public SimpleGraph getInducedSubgraph(Collection<Integer> vertices) {
         SimpleGraph graph = new SimpleGraph();
         for (Integer v : vertices) {
@@ -139,14 +151,25 @@ public class SimpleGraph implements Graph {
     }
 
     @Override
+    public boolean toggleEdge(int v1, int v2) {
+        if (isEdge(v1, v2)) {
+            deleteEdge(v1, v2);
+            return false;
+        }
+
+        addEdge(v1, v2);
+        return true;
+    }
+
+    @Override
     public boolean isConnected(boolean strongly) {
         Set<Integer> visited = new HashSet<>();
         Queue<Integer> queue = new LinkedList<>();
-        
+
         /*
-            Add some arbitrary element to the visited and queue
-            data structures. 
-        */
+         Add some arbitrary element to the visited and queue
+         data structures. 
+         */
         Iterator<Integer> iter = adjacencyList.keySet().iterator();
         if (iter.hasNext()) {
             Integer vertex = iter.next();
@@ -220,13 +243,13 @@ public class SimpleGraph implements Graph {
         System.out.println(g.getNumberOfEdges());
 
         System.out.println(g.isConnected(true));
-        
+
         SimpleGraph g1 = new SimpleGraph();
         g1.addVertex(1);
         g1.addVertex(2);
         g1.addVertex(3);
         System.out.println(g1.isConnected(true));
- 
+
     }
 
 }

@@ -12,7 +12,18 @@ import java.util.Collection;
  * @author sikdar
  */
 public interface Graph {
-    
+
+    Collection<Edge> getEdges();
+
+    /**
+     * If v1,v2 was edge, delete it, otherwise add it.
+     *
+     * @param v1
+     * @param v2
+     * 
+     * @return true if edge was added, false o.w.
+     */
+    boolean toggleEdge(int v1, int v2);
 
     /**
      * Checks whether the two given vertices form an edge in the graph. If the
@@ -24,31 +35,35 @@ public interface Graph {
      * @return true if and only if (v1,v2) is an edge in this graph.
      */
     boolean isEdge(int v1, int v2);
-    
+
     /**
-     *  Returns the number of vertices in the graph
+     * Returns the number of vertices in the graph
+     *
      * @return size of vertex set
      */
     int size();
 
     /**
-     *  returns the number of edges
+     * returns the number of edges
+     *
      * @return the size of the edge set
      */
     int getNumberOfEdges();
 
     /**
-     *  Checks if v is a vertex
+     * Checks if v is a vertex
+     *
      * @param v
      * @return true if v is a vertex; false otherwise
      */
     boolean isVertex(int v);
 
     /**
-     * Undirected graphs: Returns the the degree of vertex v 
-     * Directed graphs: Returns the out-degree of v
+     * Undirected graphs: Returns the the degree of vertex v Directed graphs:
+     * Returns the out-degree of v
+     *
      * @param v
-     * @return total degree (undirected graphs); out-degree (directed graphs) 
+     * @return total degree (undirected graphs); out-degree (directed graphs)
      */
     int getDegree(int v);
 
@@ -59,12 +74,13 @@ public interface Graph {
     void deleteEdge(Edge e);
 
     void deleteEdge(int v1, int v2);
-    
+
     /**
-     * Undirected graphs: returns the neighborhood of v
-     * Directed graphs: returns the out-neighborhood of v
+     * Undirected graphs: returns the neighborhood of v Directed graphs: returns
+     * the out-neighborhood of v
+     *
      * @param v
-     * @return 
+     * @return
      */
     Collection<Integer> getNeighborhood(int v);
 
@@ -88,8 +104,8 @@ public interface Graph {
      * the strongly-flag is ignored.
      *
      * @param strongly
-     * @return true if either the graph is undirected and connected OR if 
-     * directed and strongly connected. Returns false otherwise. 
+     * @return true if either the graph is undirected and connected OR if
+     * directed and strongly connected. Returns false otherwise.
      */
     boolean isConnected(boolean strongly);
 

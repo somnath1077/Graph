@@ -10,7 +10,7 @@ public class UndirectedEdge implements Comparable<UndirectedEdge>, Edge {
 
     public UndirectedEdge(int a, int b) {
         if (a == b) {
-            throw new IllegalArgumentException("It's a simple graph!");
+            throw new IllegalArgumentException("Tried adding self-loop for vertex " + a);
         }
         v1 = Math.min(a, b);
         v2 = Math.max(a, b);

@@ -269,6 +269,26 @@ public class Digraph implements Graph {
     }
 
     @Override
+    public Collection<Edge> getEdges() {
+        Collection<Edge> arcs = new HashSet<Edge>();
+        for (Integer u : adjacencyList.keySet()) {
+
+            Neighborhood nbr = adjacencyList.get(u);
+            Collection<Arc> inArcs = nbr.getInArcs();
+            Collection<Arc> outArcs = nbr.getOutArcs();
+
+            for (Arc e : inArcs) {
+                arcs.add(e);
+            }
+
+            for (Arc e : outArcs) {
+                arcs.add(e);
+            }
+        }
+        return arcs;
+    }
+
+    @Override
     public Graph getInducedSubgraph(Collection<Integer> vertexSet) {
         Digraph d = new Digraph();
 
@@ -377,6 +397,16 @@ public class Digraph implements Graph {
         }
         return visited.size() == adjacencyList.size();
 
+    }
+
+    @Override
+    public boolean toggleEdge(int v1, int v2) {
+        if (isEdge(v1, v2)) { // v1 is tail and v2 is head
+            deleteArc(v1, v2);
+            return false;
+        }
+        addArc(v1, v2);
+        return true;
     }
 
     public String toString() {
