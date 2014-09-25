@@ -7,6 +7,7 @@ package gui;
 
 import static java.lang.Math.log;
 import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,19 +44,18 @@ public class SpringLayout {
         Coordinate coord1 = map.get(v1);
         Coordinate coord2 = map.get(v2);
         double dist = coord1.findDistance(coord2);
-        return log(dist) * c1;
+        //return log(dist) * c1;
+        return sqrt(dist);
     }
 
     // calculates the force between two vertices 
     // v1 and v2, assuming that they are not 
     // connected by an edge. This is repulsive force.
     private double interVertexForce(int v1, int v2) {
-
         Coordinate coord1 = map.get(v1);
         Coordinate coord2 = map.get(v2);
         double dist = coord1.findDistance(coord2);
-        return (c3 / pow(dist, 2));
-
+        return 1000d * (c3 / dist);
     }
 
     private Coordinate totalOffset(int v) {
@@ -75,14 +75,18 @@ public class SpringLayout {
             double yDiff = (coordU.getY() - coordV.getY());
             double cosine = xDiff / dist;
             double sine = yDiff / dist;
+            System.out.println(v + " has force " + cosine + "," + sine + " from (nbr) " + u);
             xOffset += cosine * force;
             yOffset += sine * force;
         }
 
         for (Integer u : graph.getVertexSet()) {
-            if (u != v && !nbr.contains(u)) {
-                double force = interVertexForce(u, v);
+            if (u != v) {
                 Coordinate coordU = map.get(u);
+
+                double force = interVertexForce(u, v);
+
+                System.out.println(v + "," + u + " has gravity force " + force);
 
                 double xDiff = (coordU.getX() - coordV.getX());
                 double yDiff = (coordU.getY() - coordV.getY());
@@ -95,7 +99,7 @@ public class SpringLayout {
             }
         }
 
-        return new Coordinate((int) (xOffset * c3), (int) (yOffset * c3));
+        return new Coordinate((int) (xOffset), (int) (yOffset));
     }
 
     public void iterate(int n) {
