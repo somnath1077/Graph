@@ -80,7 +80,6 @@ public class View extends JPanel {
         g.setColor(Color.black);
         char[] data = info.toCharArray();
         g.drawChars(data, 0, data.length, 10, 10);
-
     }
 
     public void addNewVertex(Coordinate c) {
@@ -122,7 +121,6 @@ public class View extends JPanel {
                 closestDist = dist;
                 closestVertex = v;
             }
-
         }
 
         return closestVertex;
@@ -237,14 +235,15 @@ class GraphViewListener extends MouseAdapter {
         long currentClickTime = System.currentTimeMillis();
         int x = e.getX();
         int y = e.getY();
+        
         Coordinate click = new Coordinate(x, y);
         long diff = currentClickTime - lastClickTime;
         lastClickTime = currentClickTime;
+        
         if (diff > 500) {
             singleClick(click);
         } else {
             doubleClick(click);
         }
-
     }
 }
