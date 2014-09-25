@@ -8,6 +8,7 @@ package gui;
 import static java.lang.Math.log;
 import static java.lang.Math.pow;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import simplegraph.SimpleGraph;
 
@@ -59,30 +60,38 @@ public class SpringLayout {
 
     private Coordinate totalOffset(int v) {
         Collection<Integer> nbr = graph.getNeighborhood(v);
-        int xOffset = 0;
-        int yOffset = 0;
+        double xOffset = 0;
+        double yOffset = 0;
+
+        Coordinate coordV = map.get(v);
 
         for (Integer u : nbr) {
             double force = interEdgeForce(v, u);
+            System.out.println("force:" + force);
             Coordinate coordU = map.get(u);
-            Coordinate coordV = map.get(v);
+
             double dist = coordU.findDistance(coordV);
-            double cosine = (coordU.getX() - coordV.getX()) / dist;
-            double sine = (coordU.getY() - coordV.getY()) / dist;
+            double xDiff = (coordU.getX() - coordV.getX());
+            double yDiff = (coordU.getY() - coordV.getY());
+            double cosine = xDiff / dist;
+            double sine = yDiff / dist;
             xOffset += cosine * force;
             yOffset += sine * force;
         }
 
         for (Integer u : graph.getVertexSet()) {
-            if (u != v) {
+            if (u != v && !nbr.contains(u)) {
                 double force = interVertexForce(u, v);
                 Coordinate coordU = map.get(u);
-                Coordinate coordV = map.get(v);
+
+                double xDiff = (coordU.getX() - coordV.getX());
+                double yDiff = (coordU.getY() - coordV.getY());
+
                 double dist = coordU.findDistance(coordV);
-                double cosine = (coordU.getX() - coordV.getX()) / dist;
-                double sine = (coordU.getY() - coordV.getY()) / dist;
-                xOffset -= cosine * force;
-                yOffset -= sine * force;
+                double cosine = xDiff / dist;
+                double sine = yDiff / dist;
+                xOffset += cosine * force;
+                yOffset += sine * force;
             }
         }
 
@@ -95,6 +104,8 @@ public class SpringLayout {
             return;
         }
 
+        HashMap<Integer, Coordinate> offsetMap = new HashMap<Integer, Coordinate>();
+
         for (int i = 0; i < n; ++i) {
             for (Integer v : map.keySet()) {
                 //double total = totalForce(v);
@@ -102,12 +113,12 @@ public class SpringLayout {
                 Coordinate offset = totalOffset(v);
                 System.out.println("perturbing " + v + " by " + offset.toString());
 
-                Coordinate oldCoord = map.get(v);
-                Coordinate newCoord = oldCoord.add(offset);
-                map.put(v, newCoord);
+                offsetMap.put(v, offset);
             }
-
+            // updates all the coordinates
+            for (Integer v : offsetMap.keySet()) {
+                map.put(v, map.get(v).add(offsetMap.get(v)));
+            }
         }
     }
-
 }

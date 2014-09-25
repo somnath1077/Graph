@@ -44,6 +44,14 @@ public class Coordinate {
         return sqrt(pow(xdiff, 2) + pow(ydiff, 2));
     }
 
+    public Coordinate add(Coordinate addendum) {
+        return new Coordinate(this.x + addendum.x, this.y + addendum.y);
+    }
+
+    public Coordinate perturb(double offset) {
+        return new Coordinate(this.x + (int) offset, this.y + (int) offset);
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;

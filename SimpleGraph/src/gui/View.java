@@ -23,19 +23,19 @@ import simplegraph.SimpleGraph;
  * @author sikdar
  */
 public class View extends JPanel {
-
+    
     private final SimpleGraph graph;
     private final Map<Integer, Coordinate> pos;
     private Integer highlightedVertex;
-
+    
     public View() {
         graph = new SimpleGraph();
         pos = new HashMap<>();
         highlightedVertex = null;
-
+        
         setBackground(Color.white);
     }
-
+    
     @Override
     public void paint(Graphics g) {
         
@@ -52,16 +52,16 @@ public class View extends JPanel {
             Coordinate c2 = pos.get(v2);
             g.drawLine(c1.getX() + 5, c1.getY() + 5, c2.getX() + 5, c2.getY() + 5);
         }
-
+        
         for (Integer v : pos.keySet()) {
             Coordinate c = pos.get(v);
-
+            
             if (v != highlightedVertex) {
                 g.setColor(Color.red);
             } else {
                 g.setColor(Color.CYAN);
             }
-
+            
             g.fillOval(c.getX(), c.getY(), 10, 10);
 
             // labels magic, fix at some point, to write string! 
@@ -76,13 +76,13 @@ public class View extends JPanel {
 
         g.setColor(Color.white);
         g.fillRect(0, 0, 700, 100);
-
+        
         g.setColor(Color.black);
         char[] data = info.toCharArray();
         g.drawChars(data, 0, data.length, 10, 10);
-
+        
     }
-
+    
     public void addNewVertex(Coordinate c) {
         // add vertex to graph, add coordinate 
         int u = graph.addNewVertex();
@@ -91,37 +91,44 @@ public class View extends JPanel {
         repaint();
         invalidate();
     }
-
+    
     public void highlightVertex(Integer v) {
         highlightedVertex = v;
         repaint();
         invalidate();
     }
-
+    
     public Integer getClosestVertex(Coordinate c, int radius) {
         double closestDist = radius + 1;
         Integer closestVertex = null;
-
+        
         for (Integer v : pos.keySet()) {
             Coordinate coordV = pos.get(v);
-
+            
             double dist = c.findDistance(coordV);
             if (dist <= radius && dist < closestDist) {
                 closestDist = dist;
                 closestVertex = v;
             }
-
+            
         }
-
+        
         return closestVertex;
     }
-
+    
+    public void doSpringLayout() {
+        SpringLayout spLay = new SpringLayout(graph, pos);
+        spLay.iterate(1);
+        repaint();
+        invalidate();
+    }
+    
     public void toggleEdge(int v, int u) {
         graph.toggleEdge(v, u);
         repaint();
         invalidate();
     }
-
+    
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         final View gui = new View();
@@ -133,19 +140,19 @@ public class View extends JPanel {
         // add mouse listener
         GraphViewListener mouseListener = new GraphViewListener(gui);
         gui.addMouseListener(mouseListener);
-
+        
         System.out.println("good bye");
     }
 }
 
 class GraphViewListener extends MouseAdapter {
-
+    
     private final View gui;
     private Integer selectedVertex = null;
-
+    
     public GraphViewListener(View gui) {
         this.gui = gui;
-
+        
     }
 
     /*
@@ -165,11 +172,17 @@ class GraphViewListener extends MouseAdapter {
      */
     @Override
     public void mouseClicked(MouseEvent e) {
+        
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            gui.doSpringLayout();
+            return;
+        }
+        
         int x = e.getX();
         int y = e.getY();
         Coordinate click = new Coordinate(x, y);
         System.out.println("User clicked at " + click);
-
+        
         Integer closest = gui.getClosestVertex(click, 15);
         if (closest == null) {
             System.out.println("\tAdded new vertex at " + click);
