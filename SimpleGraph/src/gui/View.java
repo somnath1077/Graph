@@ -164,6 +164,8 @@ class GraphViewListener extends MouseAdapter {
     private Integer selectedVertex = null;
     private long lastClickTime = System.currentTimeMillis();
 
+    private static final long DOUBLE_CLICK_THRESHOLD = 200;
+
     public GraphViewListener(View gui) {
         this.gui = gui;
     }
@@ -235,12 +237,12 @@ class GraphViewListener extends MouseAdapter {
         long currentClickTime = System.currentTimeMillis();
         int x = e.getX();
         int y = e.getY();
-        
+
         Coordinate click = new Coordinate(x, y);
         long diff = currentClickTime - lastClickTime;
         lastClickTime = currentClickTime;
-        
-        if (diff > 500) {
+
+        if (diff > DOUBLE_CLICK_THRESHOLD) {
             singleClick(click);
         } else {
             doubleClick(click);
