@@ -83,6 +83,8 @@ public interface Graph {
      * @return
      */
     Collection<Integer> getNeighborhood(int v);
+    
+    Collection<Integer> getVertexSet();
 
     /**
      * Adds a vertex to the graph.

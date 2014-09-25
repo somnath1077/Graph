@@ -97,6 +97,15 @@ public class SimpleGraph implements Graph {
         return adjacencyList.get(v);
     }
 
+    /**
+     * Returns the vertex set of the graph
+     * @return the set of integers that form the vertices of the graph
+     */
+    @Override
+    public Collection<Integer> getVertexSet() {
+        return adjacencyList.keySet();
+    }
+    
     @Override
     public boolean addVertex(int v) {
         if (!adjacencyList.containsKey(v)) {
