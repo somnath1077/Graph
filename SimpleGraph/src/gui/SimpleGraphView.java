@@ -10,11 +10,9 @@ import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.event.MouseListener;
 import java.util.Collection;
-import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import simplegraph.Edge;
-import simplegraph.SimpleGraph;
 
 /**
  *
@@ -23,11 +21,10 @@ import simplegraph.SimpleGraph;
 public class SimpleGraphView extends JFrame {
 
     private final JPanel pane;
-    // private final JButton buttonAddVertex;
+    // private final JButton buttonLoadGraph;
     // private final JButton buttonDeleteVertex;
     // private final JButton buttonAddEdge;
-    private SimpleGraph graph;
-    private Map<Integer, Coordinate> pos;
+    private DrawableGraph graph;
     private Integer highlightedVertex;
 
     public SimpleGraphView() {
@@ -67,14 +64,8 @@ public class SimpleGraphView extends JFrame {
         pane.addMouseListener(ml);
     }
 
-    public void updateGraph(SimpleGraph g) {
+    public void updateGraph(DrawableGraph g) {
         this.graph = g;
-        repaint();
-        invalidate();
-    }
-
-    public void updateMap(Map<Integer, Coordinate> map) {
-        this.pos = map;
         repaint();
         invalidate();
     }
@@ -87,7 +78,7 @@ public class SimpleGraphView extends JFrame {
 
     @Override
     public void paint(Graphics g) {
-        if (g == null || pos == null) {
+        if (graph == null || g == null) {
             return;
         }
 
@@ -96,20 +87,20 @@ public class SimpleGraphView extends JFrame {
 
         System.out.println("paint!");
 
-        //g.setColor(Color.white);
-        //g.fillRect(0, 0, 1000, 1000);
+        g.setColor(Color.white);
+        g.fillRect(0, 0, 1000, 1000);
         g.setColor(Color.black);
         Collection<Edge> edges = graph.getEdges();
         for (Edge e : edges) {
             int v1 = e.getV1();
             int v2 = e.getV2();
-            Coordinate c1 = pos.get(v1);
-            Coordinate c2 = pos.get(v2);
+            Coordinate c1 = graph.getCoordinate(v1);
+            Coordinate c2 = graph.getCoordinate(v2);
             g.drawLine(c1.getX() + 5, c1.getY() + 5, c2.getX() + 5, c2.getY() + 5);
         }
 
-        for (Integer v : pos.keySet()) {
-            Coordinate c = pos.get(v);
+        for (Integer v : graph.getVertexSet()) {
+            Coordinate c = graph.getCoordinate(v);
 
             if (v != highlightedVertex) {
                 g.setColor(Color.red);

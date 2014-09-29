@@ -7,9 +7,7 @@ package gui;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
 import java.util.Map;
-import simplegraph.SimpleGraph;
 
 /**
  *
@@ -18,16 +16,16 @@ import simplegraph.SimpleGraph;
 public class SimpleGraphController {
 
     private final SimpleGraphView view;
-    private final SimpleGraph graph;
-    private final Map<Integer, Coordinate> pos;
+    private final DrawableGraph graph;
+
     private long lastClickTime;
     private static final long DOUBLE_CLICK_THRESHOLD = 200;
     private Integer selectedVertex = null;
 
     public SimpleGraphController() {
         view = new SimpleGraphView();
-        graph = new SimpleGraph();
-        pos = new HashMap<>();
+        graph = new DrawableGraph();
+
         lastClickTime = System.currentTimeMillis();
 
         view.addMouseListener(new MouseAdapter() {
@@ -62,11 +60,9 @@ public class SimpleGraphController {
 
     private void addNewVertex(Coordinate c) {
         // add vertex to graph, add coordinate 
-        int u = graph.addNewVertex();
-        pos.put(u, c);
+        int u = graph.addNewVertex(c);
         System.out.println("Added vertex to graph: " + u + " at " + c);
         view.updateGraph(graph);
-        view.updateMap(pos);
     }
 
     private void deleteVertex(Integer u) {
@@ -76,11 +72,9 @@ public class SimpleGraphController {
         }
 
         graph.deleteVertex(u);
-        pos.remove(u);
         System.out.println("Removed vertex: " + u);
-
+        System.out.println("\t" + graph.getVertexSet());
         view.updateGraph(graph);
-        view.updateMap(pos);
     }
 
     private void highlightVertex(Integer v) {
@@ -90,9 +84,10 @@ public class SimpleGraphController {
     private Integer getClosestVertex(Coordinate c, int radius) {
         double closestDist = radius + 1;
         Integer closestVertex = null;
-
-        for (Integer v : pos.keySet()) {
-            Coordinate coordV = pos.get(v);
+        
+  
+        for (Integer v : graph.getVertexSet()) {
+            Coordinate coordV = graph.getCoordinate(v);
 
             double dist = c.findDistance(coordV);
             if (dist <= radius && dist < closestDist) {
@@ -105,10 +100,9 @@ public class SimpleGraphController {
     }
 
     private void doSpringLayout() {
-        SpringLayout spLay = new SpringLayout(graph, pos);
+        SpringLayout spLay = new SpringLayout(graph);
         spLay.iterate(1);
         view.updateGraph(graph);
-        view.updateMap(pos);
     }
 
     private void toggleEdge(int v, int u) {
@@ -117,7 +111,6 @@ public class SimpleGraphController {
         }
         graph.toggleEdge(v, u);
         view.updateGraph(graph);
-        view.updateMap(pos);
     }
 
     /**

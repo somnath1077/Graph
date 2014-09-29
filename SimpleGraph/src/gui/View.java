@@ -11,12 +11,9 @@ import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import simplegraph.Edge;
-import simplegraph.SimpleGraph;
 
 /**
  *
@@ -24,13 +21,11 @@ import simplegraph.SimpleGraph;
  */
 public class View extends JPanel {
 
-    private final SimpleGraph graph;
-    private final Map<Integer, Coordinate> pos;
+    private final DrawableGraph graph;
     private Integer highlightedVertex;
 
     public View() {
-        graph = new SimpleGraph();
-        pos = new HashMap<>();
+        graph = new DrawableGraph();
         highlightedVertex = null;
 
         setBackground(Color.white);
@@ -48,21 +43,21 @@ public class View extends JPanel {
         for (Edge e : edges) {
             int v1 = e.getV1();
             int v2 = e.getV2();
-            Coordinate c1 = pos.get(v1);
-            Coordinate c2 = pos.get(v2);
+            Coordinate c1 = graph.getCoordinate(v1);
+            Coordinate c2 = graph.getCoordinate(v2);
             g.drawLine(c1.getX() + 5, c1.getY() + 5, c2.getX() + 5, c2.getY() + 5);
         }
 
-        for (Integer v : pos.keySet()) {
-            Coordinate c = pos.get(v);
+        for (Integer v : graph.getVertexSet()) {
+            Coordinate c = graph.getCoordinate(v);
 
             if (v != highlightedVertex) {
-                g.setColor(Color.red);
+                g.setColor(graph.getColor(v));
             } else {
                 g.setColor(Color.CYAN);
             }
 
-            g.fillOval(c.getX(), c.getY(), 10, 10);
+            g.fillOval(c.getX(), c.getY(), graph.getSize(v), graph.getSize(v));
 
             // labels magic, fix at some point, to write string! 
             g.setColor(Color.blue);
@@ -84,8 +79,7 @@ public class View extends JPanel {
 
     public void addNewVertex(Coordinate c) {
         // add vertex to graph, add coordinate 
-        int u = graph.addNewVertex();
-        pos.put(u, c);
+        int u = graph.addNewVertex(c);
         System.out.println("Added vertex to graph: " + u + " at " + c);
         repaint();
         invalidate();
@@ -97,7 +91,6 @@ public class View extends JPanel {
             return;
         }
         graph.deleteVertex(u);
-        pos.remove(u);
         System.out.println("Removed vertex: " + u);
         repaint();
         invalidate();
@@ -113,8 +106,8 @@ public class View extends JPanel {
         double closestDist = radius + 1;
         Integer closestVertex = null;
 
-        for (Integer v : pos.keySet()) {
-            Coordinate coordV = pos.get(v);
+        for (Integer v : graph.getVertexSet()) {
+            Coordinate coordV = graph.getCoordinate(v);
 
             double dist = c.findDistance(coordV);
             if (dist <= radius && dist < closestDist) {
@@ -127,7 +120,7 @@ public class View extends JPanel {
     }
 
     public void doSpringLayout() {
-        SpringLayout spLay = new SpringLayout(graph, pos);
+        SpringLayout spLay = new SpringLayout(graph);
         spLay.iterate(1);
         repaint();
         invalidate();
