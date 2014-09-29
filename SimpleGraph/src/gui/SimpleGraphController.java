@@ -7,7 +7,6 @@ package gui;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Map;
 
 /**
  *
@@ -84,8 +83,7 @@ public class SimpleGraphController {
     private Integer getClosestVertex(Coordinate c, int radius) {
         double closestDist = radius + 1;
         Integer closestVertex = null;
-        
-  
+
         for (Integer v : graph.getVertexSet()) {
             Coordinate coordV = graph.getCoordinate(v);
 

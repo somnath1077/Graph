@@ -103,12 +103,12 @@ public class SimpleGraphView extends JFrame {
             Coordinate c = graph.getCoordinate(v);
 
             if (v != highlightedVertex) {
-                g.setColor(Color.red);
+                g.setColor(graph.getColor(v));
             } else {
                 g.setColor(Color.CYAN);
             }
 
-            g.fillOval(c.getX(), c.getY(), 10, 10);
+            g.fillOval(c.getX(), c.getY(), graph.getSize(v), graph.getSize(v));
 
             // labels magic, fix at some point, to write string! 
             g.setColor(Color.blue);
@@ -119,9 +119,6 @@ public class SimpleGraphView extends JFrame {
         info += " with n=" + graph.size();
         info += " and with m=" + graph.getNumberOfEdges();
         //info += " and avg degree = " + graph.getAverageDegree();
-
-        g.setColor(Color.white);
-        g.fillRect(0, 0, 300, 100);
 
         g.setColor(Color.black);
         char[] data = info.toCharArray();

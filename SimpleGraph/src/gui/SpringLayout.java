@@ -5,6 +5,7 @@
  */
 package gui;
 
+import static java.lang.Math.log;
 import static java.lang.Math.sqrt;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public class SpringLayout {
     // constants for spring layout
     private static final double c1 = 2.0;
     private static final double c2 = 1.0;
-    private static final double c3 = 10.0; /// gravity
+    private static final double c3 = 2.0; /// gravity
 
     private final DrawableGraph graph;
 
@@ -38,8 +39,8 @@ public class SpringLayout {
         Coordinate coord1 = graph.getCoordinate(v1);
         Coordinate coord2 = graph.getCoordinate(v2);
         double dist = coord1.findDistance(coord2);
-        //return log(dist) * c1;
-        return sqrt(dist);
+        return log(dist) * c1;
+        //return sqrt(dist);
     }
 
     // calculates the force between two vertices 
@@ -96,15 +97,15 @@ public class SpringLayout {
         return new Coordinate((int) (xOffset), (int) (yOffset));
     }
 
-    public void iterate(int n) {
-        System.out.println("iterate " + n);
+    public void iterate(int numIterations) {
+        System.out.println("iterate " + numIterations);
         if (graph.getVertexSet().isEmpty()) {
             return;
         }
 
         HashMap<Integer, Coordinate> offsetMap = new HashMap<>();
         Collection<Integer> vertices = graph.getVertexSet();
-        for (int i = 0; i < n; ++i) {
+        for (int i = 0; i < numIterations; ++i) {
             for (Integer v : vertices) {
                 //double total = totalForce(v);
                 //double offset = c1 * total;
@@ -115,7 +116,8 @@ public class SpringLayout {
             }
             // updates all the coordinates
             for (Integer v : offsetMap.keySet()) {
-                graph.setCoordinate(v, offsetMap.get(v));
+                Coordinate n = graph.getCoordinate(v).add(offsetMap.get(v));
+                graph.setCoordinate(v, n);
             }
         }
     }

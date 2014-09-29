@@ -20,7 +20,7 @@ public class NodeAttribute {
 
     public NodeAttribute() {
         coord = new Coordinate(0, 0);
-        size = 5;
+        size = 10;
         color = Color.blue;
         label = "";
     }
