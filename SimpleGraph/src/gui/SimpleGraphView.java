@@ -5,11 +5,14 @@
  */
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.Collection;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import simplegraph.Edge;
@@ -21,7 +24,7 @@ import simplegraph.Edge;
 public class SimpleGraphView extends JFrame {
 
     private final JPanel pane;
-    // private final JButton buttonLoadGraph;
+    private final JButton buttTwoColor;
     // private final JButton buttonDeleteVertex;
     // private final JButton buttonAddEdge;
     private DrawableGraph graph;
@@ -31,7 +34,7 @@ public class SimpleGraphView extends JFrame {
         super("Simple Graph View");
 
         pane = new JPanel();
-        // buttonAddVertex = new JButton("Add Vertex");
+        buttTwoColor = new JButton("Two Color Graph");
         // buttonDeleteVertex = new JButton("Delete Vertex");
         // buttonAddEdge = new JButton("Add Edge");
 
@@ -39,13 +42,16 @@ public class SimpleGraphView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Container cont = this.getContentPane();
-        cont.add(pane);
-        // pane.add(buttonAddVertex);
-        // pane.add(buttonDeleteVertex);
-        // pane.add(buttonAddEdge);
+        cont.add(pane, BorderLayout.CENTER);
+        cont.add(buttTwoColor, BorderLayout.SOUTH);
 
         setVisible(true);
     }
+
+    public void addTwoColorListener(ActionListener act) {
+        buttTwoColor.addActionListener(act);
+    }
+
     /*
      public void addAddVertexListener(ActionListener act) {
      buttonAddVertex.addActionListener(act);
@@ -59,7 +65,6 @@ public class SimpleGraphView extends JFrame {
      buttonAddEdge.addActionListener(act);
      }
      */
-
     public void addMouseListener(MouseListener ml) {
         pane.addMouseListener(ml);
     }
