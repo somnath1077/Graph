@@ -5,8 +5,16 @@
  */
 package gui;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  *
@@ -33,6 +41,75 @@ public class SimpleGraphController {
                 handleMouseClick(e);
             }
         });
+
+        view.addTwoColorListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleTwoColor();
+            }
+        });
+    }
+
+    /**
+     * This function colors the graph into two colors, if it is bipartite, in
+     * which case it returns true; else returns false;
+     *
+     * @return true if graph is bipartite together with a two coloring of the
+     * graph; false, otherwise.
+     */
+
+    private void restoreDefaults(DrawableGraph graph) {
+        for (Integer u : graph.getVertexSet()) {
+            graph.setColor(u, Color.BLUE);
+        }
+        view.invalidate();
+        view.repaint();
+    }
+
+    private boolean handleTwoColor() {
+        Collection<Integer> vertices = graph.getVertexSet();
+
+        // A vertex is visited if and all its neighbors
+        // have been placed in the green or red set
+        Collection<Integer> visited = new HashSet<>();
+        Queue<Integer> queue = new LinkedList<>();
+
+        Iterator<Integer> iter = vertices.iterator();
+        if (iter.hasNext()) {
+            Integer v = iter.next();
+            visited.add(v);
+            queue.add(v);
+            graph.setColor(v, Color.RED);
+            view.invalidate();
+            view.repaint();
+        } else {             // the graph is empty
+            return true;     // and hence return
+        }
+
+        while (!queue.isEmpty()) {
+            Integer v = queue.remove();
+            Collection<Integer> nbrV = graph.getNeighborhood(v);
+            for (Integer u : nbrV) {
+                if (graph.getColor(u) == graph.getColor(v)) {
+                    restoreDefaults(graph);
+                    return false;
+                }
+                if (!visited.contains(u)) {
+                    visited.add(u);
+                    queue.add(u);
+                    if (graph.getColor(v) == Color.RED) {
+                        graph.setColor(u, Color.GREEN);
+
+                    } else {
+                        graph.setColor(u, Color.RED);
+                    }
+                }
+            }
+            view.invalidate();
+            view.repaint();
+        }
+
+        return true;
     }
 
     private void handleMouseClick(MouseEvent e) {
@@ -170,4 +247,5 @@ public class SimpleGraphController {
     public static void main(String[] args) {
         new SimpleGraphController();
     }
+
 }
