@@ -6,7 +6,6 @@
 package gui;
 
 import static java.lang.Math.log;
-import static java.lang.Math.sqrt;
 import java.util.Collection;
 import java.util.HashMap;
 
