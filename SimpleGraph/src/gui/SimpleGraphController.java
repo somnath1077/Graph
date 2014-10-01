@@ -57,7 +57,6 @@ public class SimpleGraphController {
      * @return true if graph is bipartite together with a two coloring of the
      * graph; false, otherwise.
      */
-
     private void restoreDefaults(DrawableGraph graph) {
         for (Integer u : graph.getVertexSet()) {
             graph.setColor(u, Color.BLUE);
@@ -69,8 +68,8 @@ public class SimpleGraphController {
     private boolean handleTwoColor() {
         Collection<Integer> vertices = graph.getVertexSet();
 
-        // A vertex is visited if and all its neighbors
-        // have been placed in the green or red set
+        // A vertex is visited if it and all its neighbors
+        // are in the queue
         Collection<Integer> visited = new HashSet<>();
         Queue<Integer> queue = new LinkedList<>();
 
@@ -89,24 +88,39 @@ public class SimpleGraphController {
         while (!queue.isEmpty()) {
             Integer v = queue.remove();
             Collection<Integer> nbrV = graph.getNeighborhood(v);
-            for (Integer u : nbrV) {
-                if (graph.getColor(u) == graph.getColor(v)) {
-                    restoreDefaults(graph);
-                    return false;
-                }
-                if (!visited.contains(u)) {
-                    visited.add(u);
-                    queue.add(u);
-                    if (graph.getColor(v) == Color.RED) {
-                        graph.setColor(u, Color.GREEN);
+            if (nbrV.isEmpty()) {
+                graph.setColor(v, Color.GREEN);
+            } else {
+                for (Integer u : nbrV) {
+                    if (graph.getColor(u) == graph.getColor(v)) {
+                        restoreDefaults(graph);
+                        return false;
+                    }
+                    if (!visited.contains(u)) {
+                        visited.add(u);
+                        queue.add(u);
+                        if (graph.getColor(v) == Color.RED) {
+                            graph.setColor(u, Color.GREEN);
 
-                    } else {
-                        graph.setColor(u, Color.RED);
+                        } else {
+                            graph.setColor(u, Color.RED);
+                        }
                     }
                 }
             }
             view.invalidate();
             view.repaint();
+            // check if all vertices have been visited
+            // this needs to be checked if the graph is disconnected
+            if (queue.isEmpty() && visited.size() != graph.size()) {
+                for (Integer u : vertices) {
+                    if (!visited.contains(u)) {
+                        queue.add(u);
+                        visited.add(u);
+                        break;
+                    }
+                }
+            }
         }
 
         return true;
