@@ -14,7 +14,9 @@ import java.awt.event.MouseListener;
 import java.util.Collection;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import simplegraph.Edge;
 
 /**
@@ -24,9 +26,8 @@ import simplegraph.Edge;
 public class SimpleGraphView extends JFrame {
 
     private final JPanel pane;
+    private final JTextField label;
     private final JButton buttTwoColor;
-    // private final JButton buttonDeleteVertex;
-    // private final JButton buttonAddEdge;
     private DrawableGraph graph;
     private Integer highlightedVertex;
 
@@ -34,6 +35,8 @@ public class SimpleGraphView extends JFrame {
         super("Simple Graph View");
 
         pane = new JPanel();
+        label = new JTextField("My colorful graph");
+        label.setEditable(rootPaneCheckingEnabled);
         buttTwoColor = new JButton("Two Color Graph");
         // buttonDeleteVertex = new JButton("Delete Vertex");
         // buttonAddEdge = new JButton("Add Edge");
@@ -42,6 +45,8 @@ public class SimpleGraphView extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Container cont = this.getContentPane();
+        cont.add(label, BorderLayout.NORTH);
+        //cont.add(text, BorderLayout.NORTH);
         cont.add(pane, BorderLayout.CENTER);
         cont.add(buttTwoColor, BorderLayout.SOUTH);
 
@@ -71,6 +76,16 @@ public class SimpleGraphView extends JFrame {
 
     public void updateGraph(DrawableGraph g) {
         this.graph = g;
+        String info = "Graph is " + (graph.isConnected(true) ? "connected" : "disconnected");
+        info += " with n = " + graph.size();
+        info += " and with m = " + graph.getNumberOfEdges();
+        System.out.print("setting label text to " + info);
+        label.setText(info);
+        System.out.println(". done: " + label.getText());
+
+        label.repaint();
+        label.invalidate();
+
         repaint();
         invalidate();
     }
@@ -120,14 +135,15 @@ public class SimpleGraphView extends JFrame {
             char[] data = ("" + v).toCharArray();
             g.drawChars(data, 0, data.length, c.getX() + 5, c.getY() - 5);
         }
-        String info = "Graph is " + (graph.isConnected(true) ? "connected" : "disconnected");
-        info += " with n=" + graph.size();
-        info += " and with m=" + graph.getNumberOfEdges();
-        //info += " and avg degree = " + graph.getAverageDegree();
+        /*String info = "Graph is " + (graph.isConnected(true) ? "connected" : "disconnected");
+         info += " with n=" + graph.size();
+         info += " and with m=" + graph.getNumberOfEdges();
+         //info += " and avg degree = " + graph.getAverageDegree();
 
-        g.setColor(Color.black);
-        char[] data = info.toCharArray();
-        g.drawChars(data, 0, data.length, 10, 10);
+         g.setColor(Color.black);
+         char[] data = info.toCharArray();
+         g.drawChars(data, 0, data.length, 10, 10);
+         */
     }
 
 }
