@@ -88,6 +88,16 @@ public class SimpleGraph implements Graph {
     public int getDegree(int v) {
         return adjacencyList.get(v).size();
     }
+    
+    public int getMaxDegree() {
+        int max = 0;
+        for (Integer u : this.getVertexSet()) {
+            if (this.getDegree(u) > max) {
+                max = this.getDegree(u);
+            }
+        }
+        return max;
+    }
 
     @Override
     public Collection<Integer> getNeighborhood(int v) {
