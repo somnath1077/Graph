@@ -13,11 +13,11 @@ import java.util.Set;
  *
  * @author sikdar
  */
-public class SimpleGraph implements Graph {
+public class SimpleGraph implements Graph, Cloneable {
 
     /**
-     * A SimpleGraph object has two fields: --the number of edges --the
-     * adjacency list implemented as a HashTable of heaps
+     * A SimpleGraph object has a single field: --the adjacency list implemented
+     * as a HashTable of heaps
      */
     private final Map<Integer, Collection<Integer>> adjacencyList;
 
@@ -88,15 +88,54 @@ public class SimpleGraph implements Graph {
     public int getDegree(int v) {
         return adjacencyList.get(v).size();
     }
-    
+
+    /**
+     * getMaxDegree() returns the maximum degree in the graph. If empty, then it
+     * returns -1.
+     *
+     * @return maximum degree or -1 if graph is empty
+     */
     public int getMaxDegree() {
-        int max = 0;
+        Integer v = null;
+        Iterator<Integer> iter = this.adjacencyList.keySet().iterator();
+        if (iter.hasNext()) {
+            v = iter.next();
+        } else {
+            return -1;
+        }
+         
+        int max = this.getDegree(v);
         for (Integer u : this.getVertexSet()) {
             if (this.getDegree(u) > max) {
                 max = this.getDegree(u);
             }
         }
         return max;
+    }
+
+    /**
+     *
+     * @return minimum degree or -1 if graph is empty
+     */
+    public int getMinDegree() {
+
+        Integer v = null;
+        Iterator<Integer> iter = this.adjacencyList.keySet().iterator();
+        if (iter.hasNext()) {
+            v = iter.next();
+        } else {
+            return -1;
+        }
+
+        // if size() != 0, then min degree >= 0
+        int min = this.getDegree(v);
+        for (Integer u : this.getVertexSet()) {
+            if (this.getDegree(u) < min) {
+                min = this.getDegree(u);
+            }
+        }
+
+        return min;
     }
 
     @Override
@@ -109,17 +148,48 @@ public class SimpleGraph implements Graph {
 
     /**
      * Returns the vertex set of the graph
+     *
      * @return the set of integers that form the vertices of the graph
      */
     @Override
     public Collection<Integer> getVertexSet() {
         return adjacencyList.keySet();
     }
-    
+
+    public Integer getLowestDegreeVertex() {
+        if (this.size() == 0) {
+            return null;
+        }
+
+        int minDeg = this.getMinDegree();
+
+        for (Integer u : this.getVertexSet()) {
+            if (getDegree(u) == minDeg) {
+                return u;
+            }
+        }
+
+        return null;
+    }
+
+    public Integer getHighestDegreeVertex() {
+        if (this.size() == 0) {
+            return null;
+        }
+
+        int maxDeg = this.getMaxDegree();
+        for (Integer u : this.getVertexSet()) {
+            if (getDegree(u) == maxDeg) {
+                return u;
+            }
+        }
+        return null;
+    }
+
     @Override
     public boolean addVertex(int v) {
         if (!adjacencyList.containsKey(v)) {
-            adjacencyList.put(v, new HashSet<>());
+            adjacencyList.put(v, new HashSet<Integer>());
             return true;
         }
         return false;
@@ -178,6 +248,20 @@ public class SimpleGraph implements Graph {
 
         addEdge(v1, v2);
         return true;
+    }
+
+    @Override
+    public SimpleGraph clone() throws CloneNotSupportedException {
+        SimpleGraph cloned = new SimpleGraph();
+        for (Integer u : this.getVertexSet()) {
+            Collection<Integer> nbr = this.getNeighborhood(u);
+            Collection<Integer> cloneNbr = new HashSet<>();
+            for (Integer v : nbr) {
+                cloneNbr.add(v);
+            }
+            cloned.adjacencyList.put(u, cloneNbr);
+        }
+        return cloned;
     }
 
     @Override
