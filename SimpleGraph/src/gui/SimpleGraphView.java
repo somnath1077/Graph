@@ -26,6 +26,7 @@ import simplegraph.Edge;
 public class SimpleGraphView extends JFrame {
 
     private final JPanel pane;
+    private final JPanel buttonPanel;
     private final JTextField label;
     private final JButton buttTwoColor;
     private final JButton buttIndSet;
@@ -36,6 +37,7 @@ public class SimpleGraphView extends JFrame {
         super("Simple Graph View");
 
         pane = new JPanel();
+        buttonPanel = new JPanel();
         label = new JTextField("My colorful graph");
         label.setEditable(rootPaneCheckingEnabled);
         buttTwoColor = new JButton("Two Color Graph");
@@ -48,11 +50,11 @@ public class SimpleGraphView extends JFrame {
 
         Container cont = this.getContentPane();
         cont.add(label, BorderLayout.NORTH);
-        //cont.add(text, BorderLayout.NORTH);
         cont.add(pane, BorderLayout.CENTER);
-        cont.add(buttTwoColor, BorderLayout.SOUTH);
-        cont.add(buttIndSet, BorderLayout.SOUTH);
-
+        buttonPanel.add(buttTwoColor);
+        buttonPanel.add(buttIndSet);
+        cont.add(buttonPanel, BorderLayout.SOUTH);
+        
         setVisible(true);
     }
 
