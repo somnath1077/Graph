@@ -136,8 +136,8 @@ public class SimpleGraphController {
 
     /**
      * This function invokes the Independent Set algorithm on the DrawableGraph
-     * and sets the color of the independent set vertices to green and the
-     * remaining to white.
+     * and sets the color of the independent set vertices to BLUE and the
+     * remaining to BLACK.
      */
     private void handleIndSet() {
         IndependentSet indSet = new IndependentSet(this.graph);
