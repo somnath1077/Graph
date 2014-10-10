@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import simplegraph.IndependentSet;
 
 /**
  *
@@ -46,6 +47,13 @@ public class SimpleGraphController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 handleTwoColor();
+            }
+        });
+
+        view.addIndSetListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleIndSet();
             }
         });
     }
@@ -124,6 +132,25 @@ public class SimpleGraphController {
         }
 
         return true;
+    }
+
+    /**
+     * This function invokes the Independent Set algorithm on the DrawableGraph
+     * and sets the color of the independent set vertices to green and the
+     * remaining to white.
+     */
+    private void handleIndSet() {
+        IndependentSet indSet = new IndependentSet(this.graph);
+        Collection<Integer> solution = indSet.maxIS();
+        for (Integer u : graph.getVertexSet()) {
+            if (solution.contains(u)) {
+                graph.setColor(u, Color.BLUE);
+            } else {
+                graph.setColor(u, Color.BLACK);
+            }
+        }
+        view.invalidate();
+        view.repaint();
     }
 
     private void handleMouseClick(MouseEvent e) {
