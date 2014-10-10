@@ -28,6 +28,7 @@ public class SimpleGraphView extends JFrame {
     private final JPanel pane;
     private final JTextField label;
     private final JButton buttTwoColor;
+    private final JButton buttIndSet;
     private DrawableGraph graph;
     private Integer highlightedVertex;
 
@@ -38,6 +39,7 @@ public class SimpleGraphView extends JFrame {
         label = new JTextField("My colorful graph");
         label.setEditable(rootPaneCheckingEnabled);
         buttTwoColor = new JButton("Two Color Graph");
+        buttIndSet = new JButton("Maximum Independent Set");
         // buttonDeleteVertex = new JButton("Delete Vertex");
         // buttonAddEdge = new JButton("Add Edge");
 
@@ -49,6 +51,7 @@ public class SimpleGraphView extends JFrame {
         //cont.add(text, BorderLayout.NORTH);
         cont.add(pane, BorderLayout.CENTER);
         cont.add(buttTwoColor, BorderLayout.SOUTH);
+        cont.add(buttIndSet, BorderLayout.SOUTH);
 
         setVisible(true);
     }
@@ -57,19 +60,20 @@ public class SimpleGraphView extends JFrame {
         buttTwoColor.addActionListener(act);
     }
 
+    public void addAddVertexListener(ActionListener act) {
+        buttIndSet.addActionListener(act);
+    }
+
     /*
-     public void addAddVertexListener(ActionListener act) {
-     buttonAddVertex.addActionListener(act);
-     }
+    public void addDeleteVertexListener(ActionListener act) {
+        buttonDeleteVertex.addActionListener(act);
+    }
 
-     public void addDeleteVertexListener(ActionListener act) {
-     buttonDeleteVertex.addActionListener(act);
-     }
+    public void addAddEdgeListener(ActionListener act) {
+        buttonAddEdge.addActionListener(act);
+    }
 
-     public void addAddEdgeListener(ActionListener act) {
-     buttonAddEdge.addActionListener(act);
-     }
-     */
+    */
     public void addMouseListener(MouseListener ml) {
         pane.addMouseListener(ml);
     }
