@@ -62,7 +62,7 @@ public class SimpleGraphView extends JFrame {
         buttTwoColor.addActionListener(act);
     }
 
-    public void addAddVertexListener(ActionListener act) {
+    public void addIndSetListener(ActionListener act) {
         buttIndSet.addActionListener(act);
     }
 
