@@ -142,6 +142,7 @@ public class SimpleGraphController {
     private void handleIndSet() {
         IndependentSet indSet = new IndependentSet(this.graph);
         Collection<Integer> solution = indSet.maxIS();
+       
         for (Integer u : graph.getVertexSet()) {
             if (solution.contains(u)) {
                 graph.setColor(u, Color.BLUE);
