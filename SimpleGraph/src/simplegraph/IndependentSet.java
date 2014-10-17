@@ -24,7 +24,7 @@ public class IndependentSet {
     // start by repeatedly picking an arbitrary vertex of 
     // lowest degree in the solution and deleting all 
     // its neighbors. 
-    private Collection<Integer> maxDegTwoIS() {
+    private Collection<Integer> maxDegTwoIS() throws CloneNotSupportedException {
         if (this.graph.size() == 0) {
             return null;
         }
@@ -33,7 +33,7 @@ public class IndependentSet {
         try {
             localGraph = this.graph.clone();
         } catch (CloneNotSupportedException e) {
-            return null;
+            throw new CloneNotSupportedException("Clone not supported");
         }
 
         IndependentSet localCopy = new IndependentSet(localGraph);
@@ -54,10 +54,26 @@ public class IndependentSet {
     }
 
     public Collection<Integer> maxIS() {
-        return maxIS(null, false);
+        Collection<Integer> solution;
+        try{
+        solution = maxIS(null, false);
+        } catch (CloneNotSupportedException e) {
+            return null;
+        }
+        
+        return solution;
     }
 
-    public Collection<Integer> maxIS(Integer v, boolean status) {
+    /*
+     * The maxIS() function takes in a vertex and a boolean status flag 
+     * and returns a largest independent set containing the vertex (if status == true)
+     * or a largest independent set not containing the vertex (if status == false). 
+     * The function makes a local copy of the graph and checks if the maximum 
+     * degree is at most two, in whihc case, calls the maxDegTwoIS() method
+     * to solve the problem in polynomial time. Otherwise, it branches on a 
+     * vertex of largest degree. 
+    */
+    private Collection<Integer> maxIS(Integer v, boolean status) throws CloneNotSupportedException {
 
         // first create a local copy of the graph
         // which can be modified safely
@@ -65,7 +81,7 @@ public class IndependentSet {
         try {
             localGraph = this.graph.clone();
         } catch (CloneNotSupportedException e) {
-            return null;
+            throw new CloneNotSupportedException("Clone not supported");
         }
 
         IndependentSet localCopy = new IndependentSet(localGraph);
