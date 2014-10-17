@@ -55,12 +55,12 @@ public class IndependentSet {
 
     public Collection<Integer> maxIS() {
         Collection<Integer> solution;
-        try{
-        solution = maxIS(null, false);
+        try {
+            solution = maxIS(null, false);
         } catch (CloneNotSupportedException e) {
             return null;
         }
-        
+
         return solution;
     }
 
@@ -72,7 +72,7 @@ public class IndependentSet {
      * degree is at most two, in whihc case, calls the maxDegTwoIS() method
      * to solve the problem in polynomial time. Otherwise, it branches on a 
      * vertex of largest degree. 
-    */
+     */
     private Collection<Integer> maxIS(Integer v, boolean status) throws CloneNotSupportedException {
 
         // first create a local copy of the graph
@@ -107,6 +107,14 @@ public class IndependentSet {
             return localSol;
         }
 
+        // next check if the graph has max degree two
+        // this is poly-time solvable;
+        if (localCopy.graph.getMaxDegree() <= 2) {
+            localSol.addAll(localCopy.maxDegTwoIS());
+            return localSol;
+        }
+
+        // The graph has maximum degree at least three. 
         // Collect isolated vertices in the solution
         for (Integer u : localCopy.graph.getVertexSet()) {
             if (localCopy.graph.getDegree(u) == 0) {
@@ -115,19 +123,6 @@ public class IndependentSet {
             }
         }
 
-        // if the graph becomes empty in the process
-        if (localCopy.graph.size() == 0) {
-            return localSol;
-        }
-
-        // next check if the graph has max degree two
-        // this is poly-time solvable;
-        if (localCopy.graph.getMaxDegree() <= 2) {
-            localSol.addAll(localCopy.maxDegTwoIS());
-            return localSol;
-        }
-
-        // Otherwise, the graph has a vertex of degree at least three
         // Find the vertex of highest degree.
         Integer maxDegV = localCopy.graph.getHighestDegreeVertex();
         // First consider the case when the maxDegV is in the solution 
