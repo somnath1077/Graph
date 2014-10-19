@@ -94,8 +94,10 @@ public class IndependentSet {
                 localSol.add(v);
                 Collection<Integer> nbr = localCopy.graph.getNeighborhood(v);
                 localCopy.graph.deleteVertex(v);
-                for (Integer u : nbr) {
-                    localCopy.graph.deleteVertex(u);
+                if (nbr != null) {
+                    for (Integer u : nbr) {
+                        localCopy.graph.deleteVertex(u);
+                    }
                 }
             } else {  // v is not in the independent set
                 localCopy.graph.deleteVertex(v);
@@ -114,17 +116,10 @@ public class IndependentSet {
             return localSol;
         }
 
-        // The graph has maximum degree at least three. 
-        // Collect isolated vertices in the solution
-        for (Integer u : localCopy.graph.getVertexSet()) {
-            if (localCopy.graph.getDegree(u) == 0) {
-                localSol.add(u);
-                localCopy.graph.deleteVertex(u);
-            }
-        }
-
+        // The graph has maximum degree at least three.
         // Find the vertex of highest degree.
         Integer maxDegV = localCopy.graph.getHighestDegreeVertex();
+
         // First consider the case when the maxDegV is in the solution 
         Collection<Integer> partialSolIn = localCopy.maxIS(maxDegV, true);
 
@@ -137,7 +132,6 @@ public class IndependentSet {
             localSol.addAll(partialSolOut);
         }
 
-        // modify 
         return localSol;
     }
 
