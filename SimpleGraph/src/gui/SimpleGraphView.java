@@ -14,7 +14,6 @@ import java.awt.event.MouseListener;
 import java.util.Collection;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import simplegraph.Edge;
