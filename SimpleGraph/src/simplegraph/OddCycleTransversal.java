@@ -134,19 +134,39 @@ public class OddCycleTransversal {
     }
 
     /**
-     * The compression OCT method takes a reference to a SimpleGraph, a vertex
-     * set which is an odd cycle transversal for the simple graph and a
-     * parameter k. The size of the solution sol is at most k + 1. It checks
-     * whether the graph has an OCT of size at most k. If so, it returns the
-     * solution; else, it returns null.
+     * The compression OCT method takes a reference to an object of type
+     * OddCycleTransversal, a vertex set which is an odd cycle transversal for
+     * the simple graph and a parameter k. The size of the solution is at most k
+     * + 1. It checks whether the graph has an OCT of size at most k. If so, it
+     * returns the solution; else, it returns null.
      *
      * @param vertices
      * @param sol
      * @param k
      * @return a solution of size at most k, if it exists; else null.
      */
-    private Collection<Integer> compressionOCT(Collection<Integer> sol, int k) {
+    private Collection<Integer> compressionOCT(Collection<Integer> solution, int k) {
+        if (solution.size() <= k) {
+            return solution;
+        }
 
+        // First partition the vertices of the graph \ solution vertices into sets A and B
+        // such that A and B are independent.
+        
+        // Consider all possible partitions of solution into sets L, R, and T
+        // such that |T| <= k
+        
+        // For each partition of the solution set into L, R, and T find out 
+        // A_L and A_R; B_L and B_R
+        
+        // Construct an auxilliary graph from A_L, A_R, B_L, B_R and s and t;
+        // by connecting s to A_L and B_R; and t to A_R and B_L.
+        // Check if there exists an s-t separator S' of size at most k - |T|. 
+        // If yes, S' union T is the desired solution
+        
+        
+        // If for all partitions into L, R and T there is no s-t separator 
+        // of the desired size, return null (there is no solution!)
     }
 
 }
