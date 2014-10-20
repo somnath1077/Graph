@@ -294,7 +294,70 @@ public class SimpleGraph implements Graph, Cloneable {
         }
         return visited.size() == adjacencyList.size();
     }
+    
+    /**
+     * Checks if the graph is two colorable. 
+     * 
+     * @return true if it is two colorable; else false.
+     */
+    public boolean isTwoColorable() {
+        Collection<Integer> vertices = adjacencyList.keySet();
+        Map<Integer, String> coloring = new HashMap<>();
+        
+        // A vertex is visited if it and all its neighbors
+        // are in the queue
+        Collection<Integer> visited = new HashSet<>();
+        Queue<Integer> queue = new LinkedList<>();
 
+        Iterator<Integer> iter = vertices.iterator();
+        if (iter.hasNext()) {
+            Integer v = iter.next();
+            visited.add(v);
+            queue.add(v);
+            coloring.put(v, "red");
+            
+        } else {             // the graph is empty
+            return true;     // and hence return
+        }
+
+        while (!queue.isEmpty()) {
+            Integer v = queue.remove();
+            Collection<Integer> nbrV = adjacencyList.get(v);
+            if (nbrV.isEmpty()) {
+                coloring.put(v, "green");
+            } else {
+                for (Integer u : nbrV) {
+                    if (coloring.get(u) == coloring.get(v)) {
+                        return false;
+                    }
+                    if (!visited.contains(u)) {
+                        visited.add(u);
+                        queue.add(u);
+                        if (coloring.get(v) == "red") {
+                            coloring.put(u, "green");
+
+                        } else {
+                            coloring.put(u, "red");
+                        }
+                    }
+                }
+            }
+            
+            // check if all vertices have been visited
+            // this needs to be checked if the graph is disconnected
+            if (queue.isEmpty() && visited.size() != adjacencyList.size()) {
+                for (Integer u : vertices) {
+                    if (!visited.contains(u)) {
+                        queue.add(u);
+                        visited.add(u);
+                        break;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
     @Override
     public String toString() {
         String graphStr = "";
@@ -351,7 +414,11 @@ public class SimpleGraph implements Graph, Cloneable {
         g1.addVertex(1);
         g1.addVertex(2);
         g1.addVertex(3);
-        System.out.println(g1.isConnected(true));
+        g1.addVertex(4);
+        g1.addEdge(1, 2);
+        g1.addEdge(1, 3);
+        g1.addEdge(2, 4);
+        System.out.println(g1.isTwoColorable());
 
     }
 
