@@ -6,7 +6,9 @@
 package simplegraph;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  *
@@ -23,7 +25,7 @@ public class OddCycleTransversal {
     /**
      * The minOddCycleTransversal method takes a reference to a SimpleGraph and
      * computes the smallest odd cycle transversal of the graph. It returns null
-     * either when the graph is bipartite or when it is empty.
+     * either when the graph is bipartite or when the graph is empty.
      *
      * @return a collection of vertices that is a smallest odd cycle
      * transversal, null if the graph is bipartite or empty.
@@ -74,20 +76,21 @@ public class OddCycleTransversal {
         // and will be the the initial parameters for the 
         // compression algorithm
         Iterator<Integer> iter = graph.getVertexSet().iterator();
-        Integer vert = null;
         while (iter.hasNext() && currVertexSet.size() != k + 1) {
-            vert = iter.next();
-            currVertexSet.add(vert);
+            currVertexSet.add(iter.next());
         }
 
         // Create a simple graph that is the graph induced 
         // by the k + 1 vertices in the currVertexSet
         OddCycleTransversal oct = createOCT(currVertexSet);
         Collection<Integer> solution = oct.compressionOCT(currVertexSet, k);
+        // if the solution is null, meaning that this induced subgraph has no 
+        // k-sized OCT, then the whole graph cannot have a k-sized OCT
         if (solution == null) {
             return null;
         }
 
+        Integer vert = null;
         while (oct.graph.size() != this.graph.size()) {
             if (iter.hasNext()) {
                 vert = iter.next();
@@ -152,8 +155,28 @@ public class OddCycleTransversal {
             return solution;
         }
 
-        // First partition the vertices of the graph \ solution vertices into sets A and B
-        // such that A and B are independent.
+        // First partition the vertices of the graph \ solution vertices 
+        // into sets A and B such that A and B are independent.
+        // To do this first copy the graph into currForest and remove 
+        // all solution vertices from it. 
+        SimpleGraph currForest = this.graph.copy();
+        for (Integer u : solution) {
+            currForest.deleteVertex(u);
+        }
+
+        // currForest is a forest and is hence two-colorable
+        Map<Integer, String> partition = currForest.partitionTwoColors();
+        Collection<Integer> setA = new HashSet<>();
+        Collection<Integer> setB = new HashSet<>();
+        for (Integer u : partition.keySet()) {
+            if (partition.get(u) == "red") {
+                setA.add(u);
+            }
+            else {
+                setB.add(u);
+            }
+        }
+
         // Consider all possible partitions of solution into sets L, R, and T
         // such that |T| <= k
         // For each partition of the solution set into L, R, and T find out 
