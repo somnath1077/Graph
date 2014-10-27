@@ -103,7 +103,7 @@ public class SimpleGraph implements Graph, Cloneable {
         } else {
             return -1;
         }
-         
+
         int max = this.getDegree(v);
         for (Integer u : this.getVertexSet()) {
             if (this.getDegree(u) > max) {
@@ -250,6 +250,19 @@ public class SimpleGraph implements Graph, Cloneable {
         return true;
     }
 
+    public SimpleGraph copy() {
+        SimpleGraph clone = new SimpleGraph();
+        for (Integer u : this.getVertexSet()) {
+            Collection<Integer> nbr = this.getNeighborhood(u);
+            Collection<Integer> cloneNbr = new HashSet<>();
+            for (Integer v : nbr) {
+                cloneNbr.add(v);
+            }
+            clone.adjacencyList.put(u, cloneNbr);
+        }
+        return clone;
+    }
+
     @Override
     public SimpleGraph clone() throws CloneNotSupportedException {
         SimpleGraph cloned = new SimpleGraph();
@@ -294,16 +307,33 @@ public class SimpleGraph implements Graph, Cloneable {
         }
         return visited.size() == adjacencyList.size();
     }
-    
+
     /**
-     * Checks if the graph is two colorable. 
-     * 
+     * Checks if the graph is two colorable.
+     *
      * @return true if it is two colorable; else false.
      */
     public boolean isTwoColorable() {
+        final Map<Integer, String> coloring = new HashMap<>();
+        return testTwoColorable(coloring);
+    }
+
+    /**
+     * If the graph is known to be two-colorable, the partitionTwoColors
+     * partitions the vertex set of the graph into two colors red and green.
+     *
+     * @return a HashMap that maps vertices to one of the two strings "red"
+     * or "green"
+     */
+    public Map<Integer, String> partitionTwoColors() {
+        final Map<Integer, String> coloring = new HashMap<>();
+        testTwoColorable(coloring);
+        return coloring;
+    }
+
+    private boolean testTwoColorable(final Map<Integer, String> coloring) {
         Collection<Integer> vertices = adjacencyList.keySet();
-        Map<Integer, String> coloring = new HashMap<>();
-        
+
         // A vertex is visited if it and all its neighbors
         // are in the queue
         Collection<Integer> visited = new HashSet<>();
@@ -315,7 +345,7 @@ public class SimpleGraph implements Graph, Cloneable {
             visited.add(v);
             queue.add(v);
             coloring.put(v, "red");
-            
+
         } else {             // the graph is empty
             return true;     // and hence return
         }
@@ -342,7 +372,7 @@ public class SimpleGraph implements Graph, Cloneable {
                     }
                 }
             }
-            
+
             // check if all vertices have been visited
             // this needs to be checked if the graph is disconnected
             if (queue.isEmpty() && visited.size() != adjacencyList.size()) {
@@ -357,7 +387,7 @@ public class SimpleGraph implements Graph, Cloneable {
         }
         return true;
     }
-    
+
     @Override
     public String toString() {
         String graphStr = "";
