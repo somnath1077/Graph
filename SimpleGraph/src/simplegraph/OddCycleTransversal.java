@@ -124,7 +124,9 @@ public class OddCycleTransversal {
 
             for (Integer w : this.graph.getNeighborhood(u)) {
                 if (currVertexSet.contains(w)) {
-                    g.addVertex(w);
+                    if (!g.isVertex(w)) {
+                        g.addVertex(w);
+                    }
                     g.addEdge(u, w);
                 }
             }
@@ -152,19 +154,14 @@ public class OddCycleTransversal {
 
         // First partition the vertices of the graph \ solution vertices into sets A and B
         // such that A and B are independent.
-        
         // Consider all possible partitions of solution into sets L, R, and T
         // such that |T| <= k
-        
         // For each partition of the solution set into L, R, and T find out 
         // A_L and A_R; B_L and B_R
-        
         // Construct an auxilliary graph from A_L, A_R, B_L, B_R and s and t;
         // by connecting s to A_L and B_R; and t to A_R and B_L.
         // Check if there exists an s-t separator S' of size at most k - |T|. 
         // If yes, S' union T is the desired solution
-        
-        
         // If for all partitions into L, R and T there is no s-t separator 
         // of the desired size, return null (there is no solution!)
     }
