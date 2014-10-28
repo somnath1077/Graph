@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.ArrayList;
 
 /**
  *
@@ -74,7 +75,8 @@ public class OddCycleTransversal {
         // First create a graph with k + 1 vertices
         // This graph trivially has an OCT of size k + 1
         // and will be the the initial parameters for the 
-        // compression algorithm
+        // compression algorithm 
+        // NOTE: 2 <= k + 1 <= graph.size()
         Iterator<Integer> iter = graph.getVertexSet().iterator();
         while (iter.hasNext() && currVertexSet.size() != k + 1) {
             currVertexSet.add(iter.next());
@@ -171,14 +173,49 @@ public class OddCycleTransversal {
         for (Integer u : partition.keySet()) {
             if (partition.get(u) == "red") {
                 setA.add(u);
-            }
-            else {
+            } else {
                 setB.add(u);
             }
         }
 
         // Consider all possible partitions of solution into sets L, R, and T
-        // such that |T| <= k
+        // such that |T| <= k. At this point, solution has size k + 1
+        // and 2 <= k + 1 <= graph.size() 
+        // The strategy used is to count from 0 till 3^{k + 1} - 2;
+        // for each value of count, we convert count to ternary and 
+        // use this representation for the partition into L, R and T.
+        // If a bit is 0, then it is in L; if it 1 then it is in R;
+        // otherwise it is in T.
+        // We count till 3^{k + 1} - 2, because the all 2-string does
+        // not represent a valid partition
+        long maxCount = (long) Math.pow(3, k + 1) - 2;
+        int[] vertArr = new int[solution.size()];
+        Iterator<Integer> iter = solution.iterator();
+        Collection<Integer> setL = new HashSet<>();
+        Collection<Integer> setR = new HashSet<>();
+        Collection<Integer> setT = new HashSet<>();
+
+        for (int i = 0; i < solution.size(); ++i) {
+            vertArr[i] = iter.next();
+        }
+
+        for (long i = 0; i <= maxCount; ++i) {
+            // convert i into ternary
+            ArrayList<Integer> ternary = getTernary(i);
+            // Use the ternary representation of i to 
+            // get the next partition of solution into 
+            // L, R and T
+            for (int j = 0; j < ternary.size(); ++j) {
+                if (ternary.get(j) == 0) {
+                    setL.add(vertArr[j]);
+                } else if (ternary.get(j) == 1) {
+                    setR.add(vertArr[j]);
+                } else {
+                    setT.add(vertArr[j]);
+                }
+            }
+        }
+
         // For each partition of the solution set into L, R, and T find out 
         // A_L and A_R; B_L and B_R
         // Construct an auxilliary graph from A_L, A_R, B_L, B_R and s and t;
@@ -187,6 +224,26 @@ public class OddCycleTransversal {
         // If yes, S' union T is the desired solution
         // If for all partitions into L, R and T there is no s-t separator 
         // of the desired size, return null (there is no solution!)
+        return solution;
     }
 
+    private ArrayList<Integer> getTernary(long num) {
+        ArrayList<Integer> ternary = new ArrayList<Integer>();
+        long quotient = num;
+        if (quotient == 0) {
+            ternary.add(0);
+            return ternary;
+        }
+
+        Integer remainder = null;
+        while (quotient != 0) {
+            long temp = quotient / 3;
+            remainder = (int) quotient % 3;
+            quotient = temp;
+            ternary.add(remainder);
+        }
+
+        return ternary;
+
+    }
 }
