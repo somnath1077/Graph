@@ -322,8 +322,8 @@ public class SimpleGraph implements Graph, Cloneable {
      * If the graph is known to be two-colorable, the partitionTwoColors
      * partitions the vertex set of the graph into two colors red and green.
      *
-     * @return a HashMap that maps vertices to one of the two strings "red"
-     * or "green"
+     * @return a HashMap that maps vertices to one of the two strings "red" or
+     * "green"
      */
     public Map<Integer, String> partitionTwoColors() {
         final Map<Integer, String> coloring = new HashMap<>();
@@ -388,6 +388,50 @@ public class SimpleGraph implements Graph, Cloneable {
         return true;
     }
 
+    /**
+     * This method takes a set of vertices and reports true if the graph induced
+     * by them is independent;
+     *
+     * @param a HashSet of vertices
+     * @return true if the graph induced on the given vertex set is independent;
+     * else return false.
+     * 
+     * Note: we are not checking whether the numbers in the set are actually vertices
+     * of the graph as this check is performed by the isEdge method
+     */
+    public boolean isIndependent(HashSet<Integer> set) {
+        for (Integer u : set) {
+            Iterator it = set.iterator();
+            while (it.hasNext()) {
+                Integer v = (Integer) it.next();
+                if (this.isEdge(u, v)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    
+    /**
+     * This method takes in two sets A and B and reports the neighbors of A in the 
+     * set B. The sets need not be disjoint!
+     * 
+     * @return the set of neighbors of setA in setB as a HashSet of Integers
+     */
+    public Collection<Integer> findNeighbors(Collection<Integer> setA, Collection<Integer> setB) {
+        Collection<Integer> neighborsOfAinB = new HashSet<>();
+        for (Integer u : setA) {
+            for (Integer v : setB) {
+                if (isEdge(u, v)) {
+                    neighborsOfAinB.add(v);
+                }
+            }
+        }
+        
+        return neighborsOfAinB;
+    }
+    
     @Override
     public String toString() {
         String graphStr = "";
