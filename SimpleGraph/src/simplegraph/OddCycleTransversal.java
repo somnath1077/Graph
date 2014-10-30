@@ -186,9 +186,9 @@ public class OddCycleTransversal {
         // use this representation for the partition into L, R and T.
         // If a bit is 0, then it is in L; if it 1 then it is in R;
         // otherwise it is in T.
-        // We count till 3^{k + 1} - 2, because the all 2-string does
+        // We count till 3^{k + 1} - 2, because the all 2-vector does
         // not represent a valid partition
-        long maxCount = (long) Math.pow(3, k + 1) - 2;
+        long maxCount = (long) Math.pow(3, k + 1) - 2; // not checking for overflows!
         int[] vertArr = new int[solution.size()];
         Iterator<Integer> iter = solution.iterator();
         Collection<Integer> setL = new HashSet<>();
@@ -199,6 +199,8 @@ public class OddCycleTransversal {
             vertArr[i] = iter.next();
         }
 
+        // Here begins the long loop that examines all possible 
+        // partitions of the solution set
         for (long i = 0; i <= maxCount; ++i) {
             // convert i into ternary
             ArrayList<Integer> ternary = getTernary(i);
@@ -214,17 +216,32 @@ public class OddCycleTransversal {
                     setT.add(vertArr[j]);
                 }
             }
-        }
+            // check whether G[L] and G[R] are independent
+            // if not, we can move on to the next partition
+            if (!this.graph.isIndependent((HashSet<Integer>) setL)
+                    || !this.graph.isIndependent((HashSet<Integer>) setR)) {
+                continue;
+            }
 
-        // For each partition of the solution set into L, R, and T find out 
-        // A_L and A_R; B_L and B_R
-        // Construct an auxilliary graph from A_L, A_R, B_L, B_R and s and t;
-        // by connecting s to A_L and B_R; and t to A_R and B_L.
-        // Check if there exists an s-t separator S' of size at most k - |T|. 
-        // If yes, S' union T is the desired solution
+            // For each partition of the solution set into L, R, and T find out 
+            // A_L and A_R; B_L and B_R
+            // Recall that A_L is the set of neighbors of L in the set A
+            Collection<Integer> setAl = this.graph.findNeighbors(setL, setA);
+            Collection<Integer> setAr = this.graph.findNeighbors(setR, setA);
+            Collection<Integer> setBl = this.graph.findNeighbors(setL, setB);
+            Collection<Integer> setBr = this.graph.findNeighbors(setR, setB);
+
+            // Construct an auxilliary graph from A_L, A_R, B_L, B_R and s and t;
+            // by connecting s to A_L and B_R; and t to A_R and B_L.
+            SimpleGraph auxiliaryGr = constructAuxilliary(setAl, setAr, setBl, setBr);
+
+            // Check if there exists an s-t separator S' of size at most k - |T|. 
+            // If yes, S' union T is the desired solution
+        } // Here ends the loop which examines all possible partitions of the solution set
+
         // If for all partitions into L, R and T there is no s-t separator 
         // of the desired size, return null (there is no solution!)
-        return solution;
+        return null;
     }
 
     private ArrayList<Integer> getTernary(long num) {
@@ -245,5 +262,59 @@ public class OddCycleTransversal {
 
         return ternary;
 
+    }
+
+    private SimpleGraph constructAuxilliary(Collection<Integer> setAl, Collection<Integer> setAr,
+            Collection<Integer> setBl, Collection<Integer> setBr) {
+        SimpleGraph auxilliary = new SimpleGraph();
+        Collection<Integer> vertices = new HashSet<>();
+
+        // First construct the union of these sets
+        vertices.addAll((HashSet<Integer>) setAl);
+        vertices.addAll((HashSet<Integer>) setAr);
+        vertices.addAll((HashSet<Integer>) setBl);
+        vertices.addAll((HashSet<Integer>) setAr);
+
+        auxilliary = this.graph.getInducedSubgraph(vertices);
+
+        // We still need to add the source and sink vertices.
+        // First find unique representations for source and sink
+        int maxLabel = this.graph.size() + 2; // we are guaranteed two empty indices 
+        Integer source = null;
+        Integer sink = null;
+        for (int i = 0; i < maxLabel; ++i) {
+            if (this.graph.isVertex(i)) {
+                continue;
+            }
+            if (source == null) {
+                source = i;
+            } else if (sink == null) {
+                sink = i;
+            } else {
+                break;
+            }
+
+        }
+
+        // Add the source and sink
+        auxilliary.addVertex(source);
+        auxilliary.addVertex(sink);
+
+        // Add edges from the source to Al and Br
+        Collection<Integer> sourceConnections = new HashSet<>();
+        sourceConnections.addAll((HashSet<Integer>) setAl);
+        sourceConnections.addAll((HashSet<Integer>) setBr);
+        for (Integer v : sourceConnections) {
+            auxilliary.addEdge(source, v);
+        }
+        // Add edges from sink to Ar and Bl
+        Collection<Integer> sinkConnections = new HashSet<>();
+        sourceConnections.addAll((HashSet<Integer>) setAr);
+        sourceConnections.addAll((HashSet<Integer>) setBl);
+        for (Integer v : sinkConnections) {
+            auxilliary.addEdge(source, v);
+        }
+
+        return auxilliary;
     }
 }
