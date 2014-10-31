@@ -187,7 +187,8 @@ public class OddCycleTransversal {
         // If a bit is 0, then it is in L; if it 1 then it is in R;
         // otherwise it is in T.
         // We count till 3^{k + 1} - 2, because the all 2-vector does
-        // not represent a valid partition
+        // not represent a valid partition (|T| <= k and the all 2-vector
+        // represents a partition that places everything in the set T).
         long maxCount = (long) Math.pow(3, k + 1) - 2; // not checking for overflows!
         int[] vertArr = new int[solution.size()];
         Iterator<Integer> iter = solution.iterator();
