@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import simplegraph.Edge;
+import simplegraph.*;
 
 /**
  *
