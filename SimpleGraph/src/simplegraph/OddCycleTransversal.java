@@ -25,8 +25,7 @@ public class OddCycleTransversal {
 
     /**
      * The minOddCycleTransversal method takes a reference to a SimpleGraph and
-     * computes the smallest odd cycle transversal of the graph. It returns null
-     * either when the graph is bipartite or when the graph is empty.
+     * computes the smallest odd cycle transversal of the graph.
      *
      * @return a collection of vertices that is a smallest odd cycle
      * transversal, null if the graph is bipartite or empty.
@@ -35,27 +34,20 @@ public class OddCycleTransversal {
     public Collection<Integer> minOddCycleTransversal() {
         if (graph.size() == 0) {
             System.out.println("The graph is empty!");
-            return null;
+            return new HashSet<Integer>();
         }
 
         if (graph.isTwoColorable()) {
             System.out.println("The graph is bipartite!");
-            return null;
+            return new HashSet<Integer>();
         }
 
-        int numVertices = graph.size();
-        // the parameter k varies from 1 to the number of vertices 
-        for (int k = 1; k <= numVertices; ++k) {
-
-            if (minOCT(k) != null) {
-                return minOCT(k);
-            }
+        int k = 1;
+        while (minOCT(k) == null) {
+            ++k;
         }
 
-        // This line is NEVER reached! In the worst case, k is the size 
-        // of the vertex set in which case, the solution is the vertex set itself! 
-        // Added it because the IDE is complaining.
-        return null;
+        return minOCT(k);
     }
 
     /**
@@ -67,43 +59,26 @@ public class OddCycleTransversal {
      * null if no such solution exists.
      */
     private Collection<Integer> minOCT(int k) {
-        if (k == graph.size()) {
-            return graph.getVertexSet();
-        }
-
         Collection<Integer> currVertexSet = null;
         // First create a graph with k + 1 vertices
         // This graph trivially has an OCT of size k + 1
         // and will be the the initial parameters for the 
-        // compression algorithm 
-        // NOTE: 2 <= k + 1 <= graph.size()
+        // compression algorithm. 
         Iterator<Integer> iter = graph.getVertexSet().iterator();
-        while (iter.hasNext() && currVertexSet.size() != k + 1) {
+        while (iter.hasNext() && currVertexSet.size() != k) {
             currVertexSet.add(iter.next());
         }
 
-        // Create a simple graph that is the graph induced 
-        // by the k + 1 vertices in the currVertexSet
-        OddCycleTransversal oct = createOCT(currVertexSet);
-        Collection<Integer> solution = oct.compressionOCT(currVertexSet, k);
-        // if the solution is null, meaning that this induced subgraph has no 
-        // k-sized OCT, then the whole graph cannot have a k-sized OCT
-        if (solution == null) {
-            return null;
-        }
+        Collection<Integer> solution = new HashSet<>(currVertexSet);
+        while (iter.hasNext()) {
+            int vert = iter.next();
+            // add the next vertex from the graph to the current vertex set
+            // add it to the solution too, so that the solution is an OCT 
+            // for the new graph too.
+            currVertexSet.add(vert);
+            solution.add(vert);
 
-        Integer vert = null;
-        while (oct.graph.size() != this.graph.size()) {
-            if (iter.hasNext()) {
-                vert = iter.next();
-                // add the next vertex from the graph to the current vertex set
-                // add it to the solution too, so that the solution is an OCT 
-                // for the new graph too.
-                currVertexSet.add(vert);
-                solution.add(vert);
-            }
-
-            oct = createOCT(currVertexSet);
+            OddCycleTransversal oct = createOCT(currVertexSet);
             solution = oct.compressionOCT(solution, k);
             if (solution == null) {
                 return null;
@@ -123,20 +98,7 @@ public class OddCycleTransversal {
      * @return
      */
     private OddCycleTransversal createOCT(Collection<Integer> currVertexSet) {
-        SimpleGraph g = new SimpleGraph();
-        for (Integer u : currVertexSet) {
-            g.addVertex(u);
-
-            for (Integer w : this.graph.getNeighborhood(u)) {
-                if (currVertexSet.contains(w)) {
-                    if (!g.isVertex(w)) {
-                        g.addVertex(w);
-                    }
-                    g.addEdge(u, w);
-                }
-            }
-        }
-
+        SimpleGraph g = this.graph.getInducedSubgraph(currVertexSet);
         return new OddCycleTransversal(g);
     }
 
@@ -167,11 +129,11 @@ public class OddCycleTransversal {
         }
 
         // currForest is a forest and is hence two-colorable
-        Map<Integer, String> partition = currForest.partitionTwoColors();
+        Map<Integer, SimpleGraph.VertexColor> partition = currForest.partitionTwoColors();
         Collection<Integer> setA = new HashSet<>();
         Collection<Integer> setB = new HashSet<>();
         for (Integer u : partition.keySet()) {
-            if (partition.get(u) == "red") {
+            if (partition.get(u) == SimpleGraph.VertexColor.RED) {
                 setA.add(u);
             } else {
                 setB.add(u);
@@ -241,6 +203,16 @@ public class OddCycleTransversal {
 
             // Check if there exists an s-t separator S' of size at most k - |T|. 
             // If yes, S' union T is the desired solution
+            Integer flow = null;
+            Collection<Edge> witnessEdges = new HashSet<>();
+            Pair<Integer, Collection<Edge>> flowCalc = new Pair<>(flow, witnessEdges);
+            Integer source = aux.getSecond().getFirst();
+            Integer sink = aux.getSecond().getSecond();
+
+            flowCalc = FlowInspector.findFlow(aux.getFirst(), source, sink);
+            if (flowCalc.getFirst() <= k - setT.size()) {
+                // find out separator and add it to setT and return the solution
+            }
         } // Here ends the loop which examines all possible partitions of the solution set
 
         // If for all partitions into L, R and T there is no s-t separator 
