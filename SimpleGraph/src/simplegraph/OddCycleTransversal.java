@@ -234,7 +234,10 @@ public class OddCycleTransversal {
 
             // Construct an auxilliary graph from A_L, A_R, B_L, B_R and s and t;
             // by connecting s to A_L and B_R; and t to A_R and B_L.
-            SimpleGraph auxiliaryGr = constructAuxilliary(setAl, setAr, setBl, setBr);
+            SimpleGraph auxiliaryGr = null;
+            Pair<Integer, Integer> sourceAndsink = new Pair<>(null, null);
+            Pair<SimpleGraph, Pair<Integer, Integer>> aux = new Pair<>(auxiliaryGr, sourceAndsink);
+            aux = constructAuxilliary(setAl, setAr, setBl, setBr);
 
             // Check if there exists an s-t separator S' of size at most k - |T|. 
             // If yes, S' union T is the desired solution
@@ -265,8 +268,9 @@ public class OddCycleTransversal {
 
     }
 
-    private SimpleGraph constructAuxilliary(Collection<Integer> setAl, Collection<Integer> setAr,
-            Collection<Integer> setBl, Collection<Integer> setBr) {
+    private Pair<SimpleGraph, Pair<Integer, Integer>>
+            constructAuxilliary(Collection<Integer> setAl, Collection<Integer> setAr,
+                    Collection<Integer> setBl, Collection<Integer> setBr) {
         SimpleGraph auxilliary = new SimpleGraph();
         Collection<Integer> vertices = new HashSet<>();
 
@@ -313,9 +317,10 @@ public class OddCycleTransversal {
         sourceConnections.addAll((HashSet<Integer>) setAr);
         sourceConnections.addAll((HashSet<Integer>) setBl);
         for (Integer v : sinkConnections) {
-            auxilliary.addEdge(source, v);
+            auxilliary.addEdge(sink, v);
         }
 
-        return auxilliary;
+        Pair<Integer, Integer> ss = new Pair<>(source, sink);
+        return new Pair<>(auxilliary, ss);
     }
 }
