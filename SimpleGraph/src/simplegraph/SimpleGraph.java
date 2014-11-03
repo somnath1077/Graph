@@ -15,6 +15,10 @@ import java.util.Set;
  */
 public class SimpleGraph implements Graph, Cloneable {
 
+    public enum VertexColor {
+        RED, GREEN;
+    }
+    
     /**
      * A SimpleGraph object has a single field: --the adjacency list implemented
      * as a HashTable of heaps
@@ -314,7 +318,7 @@ public class SimpleGraph implements Graph, Cloneable {
      * @return true if it is two colorable; else false.
      */
     public boolean isTwoColorable() {
-        final Map<Integer, String> coloring = new HashMap<>();
+        final Map<Integer, VertexColor> coloring = new HashMap<>();
         return testTwoColorable(coloring);
     }
 
@@ -325,13 +329,13 @@ public class SimpleGraph implements Graph, Cloneable {
      * @return a HashMap that maps vertices to one of the two strings "red" or
      * "green"
      */
-    public Map<Integer, String> partitionTwoColors() {
-        final Map<Integer, String> coloring = new HashMap<>();
+    public Map<Integer, VertexColor> partitionTwoColors() {
+        final Map<Integer, VertexColor> coloring = new HashMap<>();
         testTwoColorable(coloring);
         return coloring;
     }
 
-    private boolean testTwoColorable(final Map<Integer, String> coloring) {
+    private boolean testTwoColorable(final Map<Integer, VertexColor> coloring) {
         Collection<Integer> vertices = adjacencyList.keySet();
 
         // A vertex is visited if it and all its neighbors
@@ -344,7 +348,7 @@ public class SimpleGraph implements Graph, Cloneable {
             Integer v = iter.next();
             visited.add(v);
             queue.add(v);
-            coloring.put(v, "red");
+            coloring.put(v, VertexColor.RED);
 
         } else {             // the graph is empty
             return true;     // and hence return
@@ -354,7 +358,7 @@ public class SimpleGraph implements Graph, Cloneable {
             Integer v = queue.remove();
             Collection<Integer> nbrV = adjacencyList.get(v);
             if (nbrV.isEmpty()) {
-                coloring.put(v, "green");
+                coloring.put(v, VertexColor.RED);
             } else {
                 for (Integer u : nbrV) {
                     if (coloring.get(u) == coloring.get(v)) {
@@ -363,11 +367,11 @@ public class SimpleGraph implements Graph, Cloneable {
                     if (!visited.contains(u)) {
                         visited.add(u);
                         queue.add(u);
-                        if (coloring.get(v) == "red") {
-                            coloring.put(u, "green");
+                        if (coloring.get(v) == VertexColor.RED) {
+                            coloring.put(u, VertexColor.GREEN);
 
                         } else {
-                            coloring.put(u, "red");
+                            coloring.put(u, VertexColor.RED);
                         }
                     }
                 }
