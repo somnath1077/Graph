@@ -6,8 +6,9 @@
 package simplegraph;
 
 /**
- * This code was borrowed from package no.uib.ii.algo.st8.algorithms
- * and modified to fit the needs of this application.
+ * This code was borrowed from package no.uib.ii.algo.st8.algorithms and
+ * modified to fit the needs of this application.
+ *
  * @author sikdar
  */
 import java.util.Collection;
@@ -20,92 +21,92 @@ import java.util.Set;
 
 public class FlowInspector {
 
-	/**
-	 * Given a graph, a source and a target vertex the function computes the
-	 * flow and returns the size of the flow and a set of edges demonstrating
-	 * the flow in the graph.
-	 * 
-	 * @param graph
-	 *            A simple graph
-	 * @param source
-	 *            The source
-	 * @param target
-	 *            The target
-	 * @return The flow from source to target and a set of edges demonstrating
-	 *         the flow
-	 */
-	public static <V, E> Pair<Integer, Collection<E>> findFlow(
-			SimpleGraph<V, E> graph, V source, V target) {
-		Set<Pair<V, V>> flowEdges = new HashSet<Pair<V, V>>();
+    /**
+     * Given a graph, a source and a target vertex the function computes the
+     * flow and returns the size of the flow and a set of edges demonstrating
+     * the flow in the graph.
+     *
+     * @param graph A simple graph
+     * @param source The source
+     * @param target The target
+     * @return The flow from source to target and a set of edges demonstrating
+     * the flow
+     */
+    public static Pair<Integer, Collection<Edge>> findFlow(
+            SimpleGraph graph, Integer source, Integer target) {
+        Set<Pair<Integer, Integer>> flowEdges = new HashSet<Pair<Integer, Integer>>();
 
-		// Compute flow
-		int flow = 0;
-		while (flowIncreasingPath(graph, flowEdges, source, target))
-			++flow;
+        // Compute flow
+        int flow = 0;
+        while (flowIncreasingPath(graph, flowEdges, source, target)) {
+            ++flow;
+        }
 
-		// Retrieve edges with flow
-		Set<E> edges = new HashSet<E>();
-		for (Pair<V, V> p : flowEdges)
-			edges.add(graph.getEdge(p.first, p.second));
+        // Retrieve edges with flow
+        Set<Edge> edges = new HashSet<Edge>();
+        for (Pair<Integer, Integer> p : flowEdges) {
+            if (graph.isEdge(p.getFirst(), p.getSecond())) {
+                Edge e = new UndirectedEdge(p.getFirst(), p.getSecond());
+                edges.add(e);
+            }
 
-		return new Pair<Integer, Collection<E>>(flow, edges);
-	}
+        }
+        return new Pair<Integer, Collection<Edge>>(flow, edges);
+    }
 
-	/**
-	 * Finds a flow increasing path in the graph from source to target avoiding
-	 * the directed edges in flowEdges.
-	 * 
-	 * @param graph
-	 *            The graph
-	 * @param flowEdges
-	 *            The directed edges that should not be used in the flow
-	 *            increasing path
-	 * @param source
-	 *            The source
-	 * @param target
-	 *            The target
-	 * @return True if a flow increasing path exist, false otherwise.
-	 */
-	private static <V, E> boolean flowIncreasingPath(SimpleGraph<V, E> graph,
-			Set<Pair<V, V>> flowEdges, V source, V target) {
-		Map<V, V> prev = new HashMap<V, V>();
-		Queue<V> next = new LinkedList<V>();
+    /**
+     * Finds a flow increasing path in the graph from source to target avoiding
+     * the directed edges in flowEdges.
+     *
+     * @param graph The graph
+     * @param flowEdges The directed edges that should not be used in the flow
+     * increasing path
+     * @param source The source
+     * @param target The target
+     * @return True if a flow increasing path exist, false otherwise.
+     */
+    private static boolean flowIncreasingPath(SimpleGraph graph,
+            Set<Pair<Integer, Integer>> flowEdges, Integer source, Integer target) {
+        Map<Integer, Integer> prev = new HashMap<Integer, Integer>();
+        Queue<Integer> next = new LinkedList<Integer>();
 
-		// Initialise search
-		next.add(source);
-		prev.put(source, null);
+        // Initialise search
+        next.add(source);
+        prev.put(source, null);
 
-		// Search the graph
-		while (!next.isEmpty()) {
-			V v = next.poll();
+        // Search the graph
+        while (!next.isEmpty()) {
+            Integer v = next.poll();
 
-			if (v == target)
-				break;
+            if (v == target) {
+                break;
+            }
 
-			// Look at the neighbourhood
-			for (V nghbr : Neighbors.openNeighborhood(graph, v)) {
-				// If the edge is not in flowEdges and the neighbour is not
-				// already visited we want to search the neighbour
-				if (!flowEdges.contains(new Pair<V, V>(v, nghbr))
-						&& !prev.containsKey(nghbr)) {
-					next.add(nghbr);
-					prev.put(nghbr, v);
-				}
-			}
-		}
+            // Look at the neighbourhood
+            for (Integer nbr : graph.getNeighborhood(v)) {
+                // If the edge is not in flowEdges and the neighbour is not
+                // already visited we want to search the neighbour
+                if (!flowEdges.contains(new Pair<Integer, Integer>(v, nbr))
+                        && !prev.containsKey(nbr)) {
+                    next.add(nbr);
+                    prev.put(nbr, v);
+                }
+            }
+        }
 
-		// No path found
-		if (!prev.containsKey(target))
-			return false;
+        // No path found
+        if (!prev.containsKey(target)) {
+            return false;
+        }
 
-		// Updates flowEdges according to the path found
-		V v = target;
-		while (v != source) {
-			flowEdges.add(new Pair<V, V>(prev.get(v), v));
-			flowEdges.add(new Pair<V, V>(v, prev.get(v)));
-			v = prev.get(v);
-		}
+        // Updates flowEdges according to the path found
+        Integer v = target;
+        while (v != source) {
+            flowEdges.add(new Pair<Integer, Integer>(prev.get(v), v));
+            flowEdges.add(new Pair<Integer, Integer>(v, prev.get(v)));
+            v = prev.get(v);
+        }
 
-		return true;
-	}
+        return true;
+    }
 }
