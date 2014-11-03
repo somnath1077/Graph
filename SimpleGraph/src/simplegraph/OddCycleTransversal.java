@@ -59,7 +59,7 @@ public class OddCycleTransversal {
      * null if no such solution exists.
      */
     private Collection<Integer> minOCT(int k) {
-        Collection<Integer> currVertexSet = null;
+        Collection<Integer> currVertexSet = new HashSet<>();
         // First create a graph with k + 1 vertices
         // This graph trivially has an OCT of size k + 1
         // and will be the the initial parameters for the 
