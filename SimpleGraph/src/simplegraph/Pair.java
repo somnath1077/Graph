@@ -49,14 +49,21 @@ public class Pair<A, B> {
         }
 
         Pair other = (Pair) obj;
-        if (this.first == other.first
+        boolean firstCondition = (this.first == other.first)
+                || (this.first != null && other.first != null && this.first.equals(other.first));
+        boolean secondCondition = (this.second == other.second)
+                || (this.second != null && other.second != null && this.second.equals(other.second));
+        return firstCondition && secondCondition;
+        
+        /*if (this.first == other.first
                 || (this.first != null && other.first != null && this.first.equals(other.first))
                 && this.second == other.second
                 || (this.second != null && other.second != null && this.second.equals(other.second))) {
             return true;
         }
-
+        
         return false;
+        */
     }
 
     public String toString() {
