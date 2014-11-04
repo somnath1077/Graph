@@ -123,13 +123,13 @@ public class OddCycleTransversal {
         // into sets A and B such that A and B are independent.
         // To do this first copy the graph into currForest and remove 
         // all solution vertices from it. 
-        SimpleGraph currForest = this.graph.copy();
+        SimpleGraph bipartite = this.graph.copy();
         for (Integer u : solution) {
-            currForest.deleteVertex(u);
+            bipartite.deleteVertex(u);
         }
 
         // currForest is a forest and is hence two-colorable
-        Map<Integer, SimpleGraph.VertexColor> partition = currForest.partitionTwoColors();
+        Map<Integer, SimpleGraph.VertexColor> partition = bipartite.partitionTwoColors();
         Collection<Integer> setA = new HashSet<>();
         Collection<Integer> setB = new HashSet<>();
         for (Integer u : partition.keySet()) {
@@ -196,9 +196,8 @@ public class OddCycleTransversal {
 
             // Construct an auxilliary graph from A_L, A_R, B_L, B_R and s and t;
             // by connecting s to A_L and B_R; and t to A_R and B_L.
-            SimpleGraph auxiliaryGr = null;
-            Pair<Integer, Integer> sourceAndsink = new Pair<>(null, null);
-            Pair<SimpleGraph, Pair<Integer, Integer>> aux = new Pair<>(auxiliaryGr, sourceAndsink);
+            Pair<SimpleGraph, Pair<Integer, Integer>> aux = new Pair<>(new SimpleGraph(), 
+                                                                            new Pair<Integer, Integer>(null, null));
             aux = constructAuxilliary(setAl, setAr, setBl, setBr);
 
             // Check if there exists an s-t separator S' of size at most k - |T|. 
