@@ -208,10 +208,6 @@ public class OddCycleTransversal {
             Integer source = aux.getSecond().getFirst();
             Integer sink = aux.getSecond().getSecond();
 
-            flowCalc = FlowInspector.findFlow(aux.getFirst(), source, sink);
-            if (flowCalc.getFirst() <= k - setT.size()) {
-                // find out separator and add it to setT and return the solution
-            }
         } // Here ends the loop which examines all possible partitions of the solution set
 
         // If for all partitions into L, R and T there is no s-t separator 
