@@ -19,7 +19,7 @@ import java.util.Set;
  * O(nm^2), where f, n and m are the flow found, the number of vertices
  * and the number of edges respectively. It also supports finding minimum
  * edge cuts. In addition you can provide a cutoff and if the flow exceeds this
- * threshold it will return a flow being at least the this threshold.
+ * threshold it will return a flow being at least this threshold.
  * 
  * @author Markus Dregi
  */
