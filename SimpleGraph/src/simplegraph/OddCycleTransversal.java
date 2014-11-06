@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -207,7 +208,31 @@ public class OddCycleTransversal {
             Pair<Integer, Collection<Edge>> flowCalc = new Pair<>(flow, witnessEdges);
             Integer source = aux.getSecond().getFirst();
             Integer sink = aux.getSecond().getSecond();
-
+            
+            // Next create the Map for arccapacities so that the EdmondsKarp 
+            // implementation of max flow can be used.
+            Map<Pair<Integer, Integer>, Integer> arcCapacities = new HashMap<>();
+            for (int v : this.graph.getVertexSet()) {
+                for (int u : this.graph.getNeighborhood(v)) {
+                    arcCapacities.put(new Pair(u, v), 1);
+                    arcCapacities.put(new Pair(v, u), 1);
+                }
+            }
+            
+            EdmondsKarpMaxFlow flowRoutine = new EdmondsKarpMaxFlow(this.graph, arcCapacities,
+                                    source, sink);
+            if (flowRoutine.computeFlow() > k - setT.size()) {
+                continue;
+            }
+            
+            ArrayList<Edge> cut = flowRoutine.getCut();
+            Collection<Integer> separator = new HashSet<>();
+            for (Edge e : cut) {
+                separator.add(e.getV1());
+                separator.add(e.getV2());
+            }
+            separator.addAll(setT);
+            return separator;
         } // Here ends the loop which examines all possible partitions of the solution set
 
         // If for all partitions into L, R and T there is no s-t separator 
