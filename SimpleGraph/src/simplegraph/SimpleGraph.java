@@ -149,7 +149,7 @@ public class SimpleGraph implements Graph, Cloneable {
     @Override
     public Collection<Integer> getNeighborhood(int v) {
         if (!isVertex(v)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Not a valid vertex!");
         }
         return adjacencyList.get(v);
     }
