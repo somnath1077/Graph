@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import simplegraph.IndependentSet;
+import simplegraph.OddCycleTransversal;
 
 /**
  *
@@ -54,6 +55,13 @@ public class SimpleGraphController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 handleIndSet();
+            }
+        });
+
+        view.addOCTListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleOCT();
             }
         });
     }
@@ -142,16 +150,38 @@ public class SimpleGraphController {
     private void handleIndSet() {
         IndependentSet indSet = new IndependentSet(this.graph);
         Collection<Integer> solution = indSet.maxIS();
-       
+
         for (Integer u : graph.getVertexSet()) {
             if (solution.contains(u)) {
                 graph.setColor(u, Color.BLUE);
             } else {
-                graph.setColor(u, Color.BLACK);
+                graph.setColor(u, Color.GRAY);
             }
         }
         view.invalidate();
         view.repaint();
+    }
+
+    /**
+     * This function invokes the Odd Cycle Transversal algorithm on the
+     * DrawableGraph. The vertices of the odd cycle transversal are colored blue
+     * and the remaining vertices are colored gray.
+     */
+    private void handleOCT() {
+        OddCycleTransversal oct = new OddCycleTransversal(this.graph);
+        Collection<Integer> solution = oct.minOddCycleTransversal();
+
+        for (Integer u : graph.getVertexSet()) {
+            if (solution.contains(u)) {
+                graph.setColor(u, Color.BLUE);
+            } else {
+                graph.setColor(u, Color.GRAY);
+            }
+        }
+
+        view.invalidate();
+        view.repaint();
+
     }
 
     private void handleMouseClick(MouseEvent e) {
