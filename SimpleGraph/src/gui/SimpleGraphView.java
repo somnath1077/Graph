@@ -28,8 +28,9 @@ public class SimpleGraphView extends JFrame {
     private final JPanel pane;
     private final JPanel buttonPanel;
     private final JTextField label;
-    private final JButton buttTwoColor;
-    private final JButton buttIndSet;
+    private final JButton buttonTwoColor;
+    private final JButton buttonIndSet;
+    private final JButton buttonOCT;
     private DrawableGraph graph;
     private Integer highlightedVertex;
 
@@ -40,8 +41,9 @@ public class SimpleGraphView extends JFrame {
         buttonPanel = new JPanel();
         label = new JTextField("My colorful graph");
         label.setEditable(rootPaneCheckingEnabled);
-        buttTwoColor = new JButton("Two Color Graph");
-        buttIndSet = new JButton("Maximum Independent Set");
+        buttonTwoColor = new JButton("Two Color Graph");
+        buttonIndSet = new JButton("Maximum Independent Set");
+        buttonOCT = new JButton("Odd Cycle Transversal");
         // buttonDeleteVertex = new JButton("Delete Vertex");
         // buttonAddEdge = new JButton("Add Edge");
 
@@ -51,22 +53,27 @@ public class SimpleGraphView extends JFrame {
         Container cont = this.getContentPane();
         cont.add(label, BorderLayout.NORTH);
         cont.add(pane, BorderLayout.CENTER);
-        buttonPanel.add(buttTwoColor);
-        buttonPanel.add(buttIndSet);
+        buttonPanel.add(buttonTwoColor);
+        buttonPanel.add(buttonIndSet);
+        buttonPanel.add(buttonOCT);
         cont.add(buttonPanel, BorderLayout.SOUTH);
         
         setVisible(true);
     }
 
     public void addTwoColorListener(ActionListener act) {
-        buttTwoColor.addActionListener(act);
+        buttonTwoColor.addActionListener(act);
     }
 
     public void addIndSetListener(ActionListener act) {
-        buttIndSet.addActionListener(act);
+        buttonIndSet.addActionListener(act);
     }
 
-    /*
+    public void addOCTListener(ActionListener act) {
+        buttonOCT.addActionListener(act);
+    }
+    
+    /* 
     public void addDeleteVertexListener(ActionListener act) {
         buttonDeleteVertex.addActionListener(act);
     }
