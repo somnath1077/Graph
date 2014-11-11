@@ -16,9 +16,10 @@ import java.util.Set;
 public class SimpleGraph implements Graph, Cloneable {
 
     public enum VertexColor {
+
         RED, GREEN;
     }
-    
+
     /**
      * A SimpleGraph object has a single field: --the adjacency list implemented
      * as a HashTable of heaps
@@ -44,15 +45,18 @@ public class SimpleGraph implements Graph, Cloneable {
     @Override
     public SimpleGraph getInducedSubgraph(Collection<Integer> vertices) {
         SimpleGraph graph = new SimpleGraph();
-        for (Integer v : vertices) {
+        for (int v : vertices) {
             if (!isVertex(v)) {
                 throw new IllegalArgumentException("Not a vertex: " + v);
             }
 
             graph.addVertex(v);
             Collection<Integer> nbrV = getNeighborhood(v);
-            for (Integer u : nbrV) {
+            for (int u : nbrV) {
                 if (vertices.contains(u)) {
+                    if (!graph.isVertex(u)) {
+                        graph.addVertex(u);
+                    }
                     graph.addEdge(v, u);
                 }
             }
@@ -63,7 +67,7 @@ public class SimpleGraph implements Graph, Cloneable {
     @Override
     public SimpleGraph getSubgraph(Collection<Integer> V, Collection<Edge> E) {
         SimpleGraph graph = new SimpleGraph();
-        for (Integer v : V) {
+        for (int v : V) {
             graph.addVertex(v);
         }
 
@@ -399,9 +403,9 @@ public class SimpleGraph implements Graph, Cloneable {
      * @param a HashSet of vertices
      * @return true if the graph induced on the given vertex set is independent;
      * else return false.
-     * 
-     * Note: we are not checking whether the numbers in the set are actually vertices
-     * of the graph as this check is performed by the isEdge method
+     *
+     * Note: we are not checking whether the numbers in the set are actually
+     * vertices of the graph as this check is performed by the isEdge method
      */
     public boolean isIndependent(HashSet<Integer> set) {
         for (Integer u : set) {
@@ -416,11 +420,11 @@ public class SimpleGraph implements Graph, Cloneable {
 
         return false;
     }
-    
+
     /**
-     * This method takes in two sets A and B and reports the neighbors of A in the 
-     * set B. The sets need not be disjoint!
-     * 
+     * This method takes in two sets A and B and reports the neighbors of A in
+     * the set B. The sets need not be disjoint!
+     *
      * @return the set of neighbors of setA in setB as a HashSet of Integers
      */
     public Collection<Integer> findNeighbors(Collection<Integer> setA, Collection<Integer> setB) {
@@ -432,10 +436,10 @@ public class SimpleGraph implements Graph, Cloneable {
                 }
             }
         }
-        
+
         return neighborsOfAinB;
     }
-    
+
     @Override
     public String toString() {
         String graphStr = "";
