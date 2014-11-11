@@ -287,10 +287,8 @@ public class OddCycleTransversal {
                 source = i;
             } else if (sink == null) {
                 sink = i;
-            } else {
                 break;
             }
-
         }
 
         // Add the source and sink
