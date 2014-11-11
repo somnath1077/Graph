@@ -125,14 +125,14 @@ public class OddCycleTransversal {
 
         // First partition the vertices of the graph \ solution vertices 
         // into sets A and B such that A and B are independent.
-        // To do this first copy the graph into currForest and remove 
+        // To do this first copy the graph into bipartite and remove 
         // all solution vertices from it. 
         SimpleGraph bipartite = this.graph.copy();
         for (Integer u : solution) {
             bipartite.deleteVertex(u);
         }
 
-        // currForest is a forest and is hence two-colorable
+        // bipartite is a bipartite graph and is hence two-colorable
         Map<Integer, SimpleGraph.VertexColor> partition = bipartite.partitionTwoColors();
         Collection<Integer> setA = new HashSet<>();
         Collection<Integer> setB = new HashSet<>();
