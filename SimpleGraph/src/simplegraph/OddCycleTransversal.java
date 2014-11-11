@@ -79,8 +79,11 @@ public class OddCycleTransversal {
             currVertexSet.add(vert);
             solution.add(vert);
 
+            System.out.println("About to call createOCT");
             OddCycleTransversal oct = createOCT(currVertexSet);
+            System.out.println("This is before the compression routine is called!");
             solution = oct.compressionOCT(solution, k);
+            System.out.println("After compression routine");
             if (solution == null) {
                 return null;
             }
@@ -197,18 +200,15 @@ public class OddCycleTransversal {
 
             // Construct an auxilliary graph from A_L, A_R, B_L, B_R and s and t;
             // by connecting s to A_L and B_R; and t to A_R and B_L.
-            Pair<SimpleGraph, Pair<Integer, Integer>> aux = new Pair<>(new SimpleGraph(), 
-                                                                            new Pair<Integer, Integer>(null, null));
+            Pair<SimpleGraph, Pair<Integer, Integer>> aux = new Pair<>(new SimpleGraph(),
+                    new Pair<Integer, Integer>(null, null));
             aux = constructAuxilliary(setAl, setAr, setBl, setBr);
 
             // Check if there exists an s-t separator S' of size at most k - |T|. 
-            // If yes, S' union T is the desired solution
-            Integer flow = null;
-            Collection<Edge> witnessEdges = new HashSet<>();
-            Pair<Integer, Collection<Edge>> flowCalc = new Pair<>(flow, witnessEdges);
+            // If yes, S' union T is the desired solution.
             Integer source = aux.getSecond().getFirst();
             Integer sink = aux.getSecond().getSecond();
-            
+
             // Next create the Map for arccapacities so that the EdmondsKarp 
             // implementation of max flow can be used.
             Map<Pair<Integer, Integer>, Integer> arcCapacities = new HashMap<>();
@@ -218,13 +218,13 @@ public class OddCycleTransversal {
                     arcCapacities.put(new Pair(v, u), 1);
                 }
             }
-            
+
             EdmondsKarpMaxFlow flowRoutine = new EdmondsKarpMaxFlow(this.graph, arcCapacities,
-                                    source, sink);
+                    source, sink);
             if (flowRoutine.computeFlow() > k - setT.size()) {
                 continue;
             }
-            
+
             ArrayList<Edge> cut = flowRoutine.getCut();
             Collection<Integer> separator = new HashSet<>();
             for (Edge e : cut) {
