@@ -299,14 +299,14 @@ public class OddCycleTransversal {
         Collection<Integer> sourceConnections = new HashSet<>();
         sourceConnections.addAll((HashSet<Integer>) setAl);
         sourceConnections.addAll((HashSet<Integer>) setBr);
-        for (Integer v : sourceConnections) {
+        for (int v : sourceConnections) {
             auxilliary.addEdge(source, v);
         }
         // Add edges from sink to Ar and Bl
         Collection<Integer> sinkConnections = new HashSet<>();
         sourceConnections.addAll((HashSet<Integer>) setAr);
         sourceConnections.addAll((HashSet<Integer>) setBl);
-        for (Integer v : sinkConnections) {
+        for (int v : sinkConnections) {
             auxilliary.addEdge(sink, v);
         }
 
