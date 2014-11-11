@@ -219,7 +219,7 @@ public class OddCycleTransversal {
                 }
             }
 
-            EdmondsKarpMaxFlow flowRoutine = new EdmondsKarpMaxFlow(this.graph, arcCapacities,
+            EdmondsKarpMaxFlow flowRoutine = new EdmondsKarpMaxFlow(aux.getFirst(), arcCapacities,
                     source, sink);
             if (flowRoutine.computeFlow() > k - setT.size()) {
                 continue;
@@ -310,7 +310,6 @@ public class OddCycleTransversal {
             auxilliary.addEdge(sink, v);
         }
 
-        Pair<Integer, Integer> ss = new Pair<>(source, sink);
-        return new Pair<>(auxilliary, ss);
+        return new Pair<>(auxilliary, new Pair<>(source, sink));
     }
 }
