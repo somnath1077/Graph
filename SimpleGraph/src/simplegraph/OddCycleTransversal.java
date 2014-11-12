@@ -122,7 +122,8 @@ public class OddCycleTransversal {
         if (solution.size() <= k) {
             return solution;
         }
-
+        System.out.println("The value of k is: " + k);
+        System.out.println("creating bipartite graph...");
         // First partition the vertices of the graph \ solution vertices 
         // into sets A and B such that A and B are independent.
         // To do this first copy the graph into bipartite and remove 
@@ -131,6 +132,8 @@ public class OddCycleTransversal {
         for (Integer u : solution) {
             bipartite.deleteVertex(u);
         }
+        
+        System.out.println("finished creating bipartite graph...");
 
         // bipartite is a bipartite graph and is hence two-colorable
         Map<Integer, SimpleGraph.VertexColor> partition = bipartite.partitionTwoColors();
@@ -143,7 +146,8 @@ public class OddCycleTransversal {
                 setB.add(u);
             }
         }
-
+        
+        System.out.println("finished partitioning bipartite graph...");
         // Consider all possible partitions of solution into sets L, R, and T
         // such that |T| <= k. At this point, solution has size k + 1
         // and 2 <= k + 1 <= graph.size() 
@@ -155,7 +159,12 @@ public class OddCycleTransversal {
         // We count till 3^{k + 1} - 2, because the all 2-vector does
         // not represent a valid partition (|T| <= k and the all 2-vector
         // represents a partition that places everything in the set T).
-        long maxCount = (long) Math.pow(3, k + 1) - 2; // not checking for overflows!
+        long maxCount = 3;
+        for (int i = 1; i <= k; ++i) {
+            maxCount *= 3; // not checking for overflows!
+        }
+        // maxCount = 3^{k+1}
+        maxCount = maxCount - 2;
         int[] vertArr = new int[solution.size()];
         Iterator<Integer> iter = solution.iterator();
         Collection<Integer> setL = new HashSet<>();
@@ -165,12 +174,15 @@ public class OddCycleTransversal {
         for (int i = 0; i < solution.size(); ++i) {
             vertArr[i] = iter.next();
         }
+        
+        System.out.println("finished placing the solution vertices in array...");
 
         // Here begins the long loop that examines all possible 
         // partitions of the solution set
         for (long i = 0; i <= maxCount; ++i) {
             // convert i into ternary
             ArrayList<Integer> ternary = getTernary(i);
+            System.out.println("calculated ternary representation of " + i);
             // Use the ternary representation of i to 
             // get the next partition of solution into 
             // L, R and T
