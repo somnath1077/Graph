@@ -217,6 +217,7 @@ public class OddCycleTransversal {
             // Construct an auxilliary graph from A_L, A_R, B_L, B_R and s and t;
             // by connecting s to A_L and B_R; and t to A_R and B_L.
             Pair<SimpleGraph, Pair<Integer, Integer>> aux = constructAuxilliary(setAl, setAr, setBl, setBr);
+            System.out.println("created auxilliary graph...");
 
             // Check if there exists an s-t separator S' of size at most k - |T|. 
             // If yes, S' union T is the desired solution.
@@ -232,13 +233,16 @@ public class OddCycleTransversal {
                     arcCapacities.put(new Pair(v, u), 1);
                 }
             }
-
+            
+            System.out.println("created arc capacities...");
             EdmondsKarpMaxFlow flowRoutine = new EdmondsKarpMaxFlow(aux.getFirst(), arcCapacities,
                     source, sink);
             if (flowRoutine.computeFlow() > k - setT.size()) {
                 continue;
             }
-
+            
+            System.out.println("max flow within bounds!!");
+            
             ArrayList<Edge> cut = flowRoutine.getCut();
             Collection<Integer> separator = new HashSet<>();
             for (Edge e : cut) {
