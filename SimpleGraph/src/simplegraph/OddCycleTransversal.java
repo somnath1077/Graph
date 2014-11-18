@@ -195,13 +195,17 @@ public class OddCycleTransversal {
                     setT.add(vertArr[j]);
                 }
             }
+            
+            System.out.println("finished partitioning into setL, setR and setT...");
+            
             // check whether G[L] and G[R] are independent
             // if not, we can move on to the next partition
             if (!this.graph.isIndependent((HashSet<Integer>) setL)
                     || !this.graph.isIndependent((HashSet<Integer>) setR)) {
                 continue;
             }
-
+            
+            System.out.println("checked whether setL and setR are independent...");
             // For each partition of the solution set into L, R, and T find out 
             // A_L and A_R; B_L and B_R
             // Recall that A_L is the set of neighbors of L in the set A
@@ -253,17 +257,17 @@ public class OddCycleTransversal {
     }
 
     private ArrayList<Integer> getTernary(long num) {
-        ArrayList<Integer> ternary = new ArrayList<Integer>();
+        ArrayList<Integer> ternary = new ArrayList<>();
         long quotient = num;
         if (quotient == 0) {
             ternary.add(0);
             return ternary;
         }
 
-        Integer remainder = null;
+        int remainder = 0;
         while (quotient != 0) {
             long temp = quotient / 3;
-            remainder = (int) quotient % 3;
+            remainder = (int) (quotient % 3);
             quotient = temp;
             ternary.add(remainder);
         }
@@ -275,7 +279,7 @@ public class OddCycleTransversal {
     private Pair<SimpleGraph, Pair<Integer, Integer>>
             constructAuxilliary(Collection<Integer> setAl, Collection<Integer> setAr,
                     Collection<Integer> setBl, Collection<Integer> setBr) {
-        SimpleGraph auxilliary = new SimpleGraph();
+        
         Collection<Integer> vertices = new HashSet<>();
 
         // First construct the union of these sets
@@ -284,7 +288,7 @@ public class OddCycleTransversal {
         vertices.addAll((HashSet<Integer>) setBl);
         vertices.addAll((HashSet<Integer>) setAr);
 
-        auxilliary = this.graph.getInducedSubgraph(vertices);
+        SimpleGraph auxilliary = this.graph.getInducedSubgraph(vertices);
 
         // We still need to add the source and sink vertices.
         // First find unique representations for source and sink
