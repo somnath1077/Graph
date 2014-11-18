@@ -273,7 +273,7 @@ public class SimpleGraph implements Graph, Cloneable {
 
     @Override
     public SimpleGraph clone() throws CloneNotSupportedException {
-        SimpleGraph cloned = new SimpleGraph();
+        SimpleGraph cloned = (SimpleGraph) super.clone();
         for (Integer u : this.getVertexSet()) {
             Collection<Integer> nbr = this.getNeighborhood(u);
             Collection<Integer> cloneNbr = new HashSet<>();
@@ -400,7 +400,7 @@ public class SimpleGraph implements Graph, Cloneable {
      * This method takes a set of vertices and reports true if the graph induced
      * by them is independent;
      *
-     * @param a HashSet of vertices
+     * @param set
      * @return true if the graph induced on the given vertex set is independent;
      * else return false.
      *
@@ -425,6 +425,8 @@ public class SimpleGraph implements Graph, Cloneable {
      * This method takes in two sets A and B and reports the neighbors of A in
      * the set B. The sets need not be disjoint!
      *
+     * @param setA
+     * @param setB
      * @return the set of neighbors of setA in setB as a HashSet of Integers
      */
     public Collection<Integer> findNeighbors(Collection<Integer> setA, Collection<Integer> setB) {
