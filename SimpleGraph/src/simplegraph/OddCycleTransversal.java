@@ -35,12 +35,12 @@ public class OddCycleTransversal {
     public Collection<Integer> minOddCycleTransversal() {
         if (graph.size() == 0) {
             System.out.println("The graph is empty!");
-            return new HashSet<Integer>();
+            return new HashSet<>();
         }
 
         if (graph.isTwoColorable()) {
             System.out.println("The graph is bipartite!");
-            return new HashSet<Integer>();
+            return new HashSet<>();
         }
 
         int k = 1;
@@ -223,7 +223,7 @@ public class OddCycleTransversal {
             Integer source = aux.getSecond().getFirst();
             Integer sink = aux.getSecond().getSecond();
 
-            // Next create the Map for arccapacities so that the EdmondsKarp 
+            // Next create the Map for arc capacities so that the EdmondsKarp 
             // implementation of max flow can be used.
             Map<Pair<Integer, Integer>, Integer> arcCapacities = new HashMap<>();
             for (int v : this.graph.getVertexSet()) {
