@@ -15,7 +15,7 @@ import java.util.Queue;
 import java.util.Set;
 
 /**
- * An implementation of Edmonds Karp running in both O(f(n+m)) and
+ * An implementation of Edmonds Karp running in both O(f * (n + m)) and
  * O(nm^2), where f, n and m are the flow found, the number of vertices
  * and the number of edges respectively. It also supports finding minimum
  * edge cuts. In addition you can provide a cutoff and if the flow exceeds this
@@ -67,6 +67,7 @@ public class EdmondsKarpMaxFlow {
      * Computes the flow.
      * @return the flow
      */
+    @SuppressWarnings("empty-statement")
     public int computeFlow() {
         arcFlows = new HashMap<>();
         for (Pair<Integer, Integer> dirEdge : arcCapacities.keySet()) {
@@ -121,7 +122,7 @@ public class EdmondsKarpMaxFlow {
         }
 
         if (!prev.containsKey(sink)) {
-            return new ArrayList<Integer>();
+            return new ArrayList<>();
         }
 
         ArrayList<Integer> path = new ArrayList<>();
