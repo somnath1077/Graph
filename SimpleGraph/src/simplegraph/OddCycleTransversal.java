@@ -216,9 +216,7 @@ public class OddCycleTransversal {
 
             // Construct an auxilliary graph from A_L, A_R, B_L, B_R and s and t;
             // by connecting s to A_L and B_R; and t to A_R and B_L.
-            Pair<SimpleGraph, Pair<Integer, Integer>> aux = new Pair<>(new SimpleGraph(),
-                    new Pair<Integer, Integer>(null, null));
-            aux = constructAuxilliary(setAl, setAr, setBl, setBr);
+            Pair<SimpleGraph, Pair<Integer, Integer>> aux = constructAuxilliary(setAl, setAr, setBl, setBr);
 
             // Check if there exists an s-t separator S' of size at most k - |T|. 
             // If yes, S' union T is the desired solution.
@@ -264,10 +262,10 @@ public class OddCycleTransversal {
             return ternary;
         }
 
-        int remainder = 0;
+       
         while (quotient != 0) {
             long temp = quotient / 3;
-            remainder = (int) (quotient % 3);
+            int remainder = (int) (quotient % 3);
             quotient = temp;
             ternary.add(remainder);
         }
