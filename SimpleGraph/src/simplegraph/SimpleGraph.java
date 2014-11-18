@@ -480,7 +480,7 @@ public class SimpleGraph implements Graph, Cloneable {
         for (Integer i : adjacencyList.keySet()) {
             numE += adjacencyList.get(i).size();
         }
-        return numE;
+        return numE / 2;
     }
 
     public static void main(String[] args) {
