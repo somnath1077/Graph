@@ -235,9 +235,10 @@ public class OddCycleTransversal {
             }
             
             System.out.println("created arc capacities...");
+            int cutoff =  k - setT.size() + 1;
             EdmondsKarpMaxFlow flowRoutine = new EdmondsKarpMaxFlow(aux.getFirst(), arcCapacities,
-                    source, sink);
-            if (flowRoutine.computeFlow() > k - setT.size()) {
+                    source, sink, cutoff);
+            if (flowRoutine.computeFlow() == cutoff) {
                 continue;
             }
             
