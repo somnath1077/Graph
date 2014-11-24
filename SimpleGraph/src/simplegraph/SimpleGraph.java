@@ -273,7 +273,7 @@ public class SimpleGraph implements Graph, Cloneable {
 
     @Override
     public SimpleGraph clone() throws CloneNotSupportedException {
-        SimpleGraph cloned = (SimpleGraph) super.clone();
+        SimpleGraph cloned = new SimpleGraph();
         for (Integer u : this.getVertexSet()) {
             Collection<Integer> nbr = this.getNeighborhood(u);
             Collection<Integer> cloneNbr = new HashSet<>();
