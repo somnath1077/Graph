@@ -24,17 +24,13 @@ public class IndependentSet {
     // start by repeatedly picking an arbitrary vertex of 
     // lowest degree in the solution and deleting all 
     // its neighbors. 
-    private Collection<Integer> maxDegTwoIS() throws CloneNotSupportedException {
+    private Collection<Integer> maxDegTwoIS() {
         if (this.graph.size() == 0) {
             return null;
         }
 
         SimpleGraph localGraph;
-        try {
-            localGraph = this.graph.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new CloneNotSupportedException("Clone not supported");
-        }
+        localGraph = this.graph.copy();
 
         IndependentSet localCopy = new IndependentSet(localGraph);
         Collection<Integer> localSol = new HashSet<>();
@@ -55,11 +51,8 @@ public class IndependentSet {
 
     public Collection<Integer> maxIS() {
         Collection<Integer> solution;
-        try {
-            solution = maxIS(null, false);
-        } catch (CloneNotSupportedException e) {
-            return null;
-        }
+        solution = maxIS(null, false);
+       
 
         return solution;
     }
@@ -73,16 +66,12 @@ public class IndependentSet {
      * to solve the problem in polynomial time. Otherwise, it branches on a 
      * vertex of largest degree. 
      */
-    private Collection<Integer> maxIS(Integer v, boolean status) throws CloneNotSupportedException {
+    private Collection<Integer> maxIS(Integer v, boolean status) {
 
         // first create a local copy of the graph
         // which can be modified safely
         SimpleGraph localGraph;
-        try {
-            localGraph = this.graph.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new CloneNotSupportedException("Clone not supported");
-        }
+        localGraph = this.graph.copy();
 
         IndependentSet localCopy = new IndependentSet(localGraph);
         Collection<Integer> localSol = new HashSet<Integer>();
