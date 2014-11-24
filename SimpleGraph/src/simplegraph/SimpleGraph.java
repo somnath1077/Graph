@@ -32,7 +32,7 @@ public class SimpleGraph implements Graph, Cloneable {
 
     @Override
     public Collection<Edge> getEdges() {
-        Collection<Edge> edges = new HashSet<Edge>();
+        Collection<Edge> edges = new HashSet<>();
         for (Integer u : adjacencyList.keySet()) {
             for (Integer v : adjacencyList.get(u)) {
                 Edge e = new UndirectedEdge(u, v);
@@ -258,7 +258,7 @@ public class SimpleGraph implements Graph, Cloneable {
         return true;
     }
 
-    public SimpleGraph copy() {
+    protected SimpleGraph copy() {
         SimpleGraph clone = new SimpleGraph();
         for (Integer u : this.getVertexSet()) {
             Collection<Integer> nbr = this.getNeighborhood(u);
