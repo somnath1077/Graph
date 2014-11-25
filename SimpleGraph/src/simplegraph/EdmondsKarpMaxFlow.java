@@ -6,6 +6,7 @@
 package simplegraph;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -74,7 +75,10 @@ public class EdmondsKarpMaxFlow {
     public int computeFlow() {
         arcFlows = new HashMap<>();
         for (Pair<Integer, Integer> dirEdge : arcCapacities.keySet()) {
-            arcFlows.put(dirEdge, 0);
+            int first = dirEdge.getFirst();
+            int second = dirEdge.getSecond();
+            arcFlows.put(new Pair(first, second), 0);
+            arcFlows.put(new Pair(second, first), 0);
         }
         System.out.println("initialized arc flows...");
 
@@ -93,7 +97,11 @@ public class EdmondsKarpMaxFlow {
         int newFlow = Integer.MAX_VALUE;
         for (int i = 0; i + 1 < path.size(); ++i) {
             Pair<Integer, Integer> edge = new Pair(path.get(i), path.get(i + 1));
-            newFlow = Math.min(newFlow, arcCapacities.get(edge) - arcFlows.get(edge));
+            Pair<Integer, Integer> edgePrime = new Pair(path.get(i + 1), path.get(i));
+            if (!arcCapacities.containsKey(edgePrime)) {
+                edgePrime = edge;
+            }
+            newFlow = Math.min(newFlow, arcCapacities.get(edgePrime) - arcFlows.get(edge));
         }
         System.out.println("found new flow. updating flow...");
         if (newFlow < Integer.MAX_VALUE) {
@@ -107,40 +115,52 @@ public class EdmondsKarpMaxFlow {
     // Finds an augmenting path
     private ArrayList<Integer> findAugmentingPath() {
         System.out.println("in the findAugmentingPath method...");
-        Map<Integer, Integer> prev = new HashMap<>();
-        Queue<Integer> next = new LinkedList<>();
+        Map<Integer, Integer> parentOf = new HashMap<>();
+        Queue<Integer> list = new LinkedList<>();
 
-        next.add(source);
-        prev.put(source, null);
+        list.add(source);
+        parentOf.put(source, null);
 
-        while (!next.isEmpty()) {
-            int pos = next.poll();
+        while (!list.isEmpty()) {
+            int pos = list.poll();
+            Collection<Integer> neighborhood = graph.getNeighborhood(pos);
 
-            for (int nbr : graph.getNeighborhood(pos)) {
-                Pair<Integer, Integer> edge = new Pair(pos, nbr);
-                if (prev.containsKey(nbr)
+            for (int nbr : neighborhood) {
+                Pair<Integer, Integer> edge;
+                if (arcCapacities.containsKey(new Pair<>(pos, nbr))) {
+                    edge = new Pair<>(pos, nbr);
+                } else {
+                    edge = new Pair<>(nbr, pos);
+                }
+                new Pair(pos, nbr);
+                if (parentOf.containsKey(nbr)
                         || arcCapacities.get(edge) - arcFlows.get(edge) <= 0) {
                     continue;
                 }
 
-                prev.put(nbr, pos);
-                next.add(nbr);
+                parentOf.put(nbr, pos);
+                list.add(nbr);
             }
         }
 
-        if (!prev.containsKey(sink)) {
+        if (!parentOf.containsKey(sink)) {
             return new ArrayList<>();
         }
 
+        System.out.println("checked whether sink is on path...");
         ArrayList<Integer> path = new ArrayList<>();
         path.add(sink);
         int pos = sink;
-        while (prev.get(pos) != null) {
-            pos = prev.get(pos);
+        while (parentOf.get(pos) != null) {
+            pos = parentOf.get(pos);
             path.add(pos);
         }
 
         Collections.reverse(path);
+        System.out.println("printing path...");
+        for (int v : path) {
+            System.out.println(v);
+        }
         return path;
     }
 
@@ -208,6 +228,15 @@ public class EdmondsKarpMaxFlow {
         testGraph.addVertex(4);
         testGraph.addVertex(5);
 
+        testGraph.addEdge(0, 1);
+        testGraph.addEdge(0, 2);
+        testGraph.addEdge(1, 3);
+        testGraph.addEdge(1, 4);
+        testGraph.addEdge(2, 3);
+        testGraph.addEdge(2, 4);
+        testGraph.addEdge(3, 5);
+        testGraph.addEdge(4, 5);
+
         // arc capacities
         arcCap.put(new Pair(0, 1), 2);
         arcCap.put(new Pair(0, 2), 3);
@@ -217,7 +246,16 @@ public class EdmondsKarpMaxFlow {
         arcCap.put(new Pair(2, 4), 1);
         arcCap.put(new Pair(3, 5), 2);
         arcCap.put(new Pair(4, 5), 3);
-
+        /*
+         arcCap.put(new Pair(1, 0), -2);
+         arcCap.put(new Pair(2, 0), -3);
+         arcCap.put(new Pair(3, 1), -3);
+         arcCap.put(new Pair(4, 1), -1);
+         arcCap.put(new Pair(3, 2), -1);
+         arcCap.put(new Pair(4, 2), -1);
+         arcCap.put(new Pair(5, 3), -2);
+         arcCap.put(new Pair(5, 4), -3);
+         */
         source = 0;
         sink = 5;
 
