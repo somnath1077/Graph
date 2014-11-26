@@ -126,13 +126,7 @@ public class EdmondsKarpMaxFlow {
             Collection<Integer> neighborhood = graph.getNeighborhood(pos);
 
             for (int nbr : neighborhood) {
-                Pair<Integer, Integer> edge;
-                if (arcCapacities.containsKey(new Pair<>(pos, nbr))) {
-                    edge = new Pair<>(pos, nbr);
-                } else {
-                    edge = new Pair<>(nbr, pos);
-                }
-                new Pair(pos, nbr);
+                Pair<Integer, Integer> edge = new Pair<>(pos, nbr);
                 if (parentOf.containsKey(nbr)
                         || arcCapacities.get(edge) - arcFlows.get(edge) <= 0) {
                     continue;
@@ -246,21 +240,21 @@ public class EdmondsKarpMaxFlow {
         arcCap.put(new Pair(2, 4), 1);
         arcCap.put(new Pair(3, 5), 2);
         arcCap.put(new Pair(4, 5), 3);
-        /*
-         arcCap.put(new Pair(1, 0), -2);
-         arcCap.put(new Pair(2, 0), -3);
-         arcCap.put(new Pair(3, 1), -3);
-         arcCap.put(new Pair(4, 1), -1);
-         arcCap.put(new Pair(3, 2), -1);
-         arcCap.put(new Pair(4, 2), -1);
-         arcCap.put(new Pair(5, 3), -2);
-         arcCap.put(new Pair(5, 4), -3);
-         */
+
+        arcCap.put(new Pair(1, 0), 2);
+        arcCap.put(new Pair(2, 0), 3);
+        arcCap.put(new Pair(3, 1), 3);
+        arcCap.put(new Pair(4, 1), 1);
+        arcCap.put(new Pair(3, 2), 1);
+        arcCap.put(new Pair(4, 2), 1);
+        arcCap.put(new Pair(5, 3), 2);
+        arcCap.put(new Pair(5, 4), 3);
+
         source = 0;
         sink = 5;
 
         EdmondsKarpMaxFlow flow = new EdmondsKarpMaxFlow(testGraph, arcCap, source, sink);
-        System.out.println("The flow is: " + flow.computeFlow());
+        System.out.println("The flow is: " + flow.computeFlow()); // the max flow should be 4
 
     }
 }
