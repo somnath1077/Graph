@@ -171,6 +171,8 @@ public class EdmondsKarpMaxFlow {
     /**
      * Returns a minimum edge cut.
      *
+     * 
+     * 
      * @return a cut
      */
     public ArrayList<Edge> getCut() {
